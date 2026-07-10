@@ -1,6 +1,6 @@
 {
-  "name": "mydeltarune",
-  "displayName": "my-deltarune",
+  "name": "mydeltabuddies",
+  "displayName": "my-deltabuddies",
   "description": "MyDeltabuddies is desktop aquarium extension for Visual Studio Code.",
   "version": "0.0.1",
   "engines": {
@@ -14,10 +14,19 @@
   "contributes": {
     "commands": [
       {
-        "command": "mydeltarune.helloWorld",
+        "command": "mydeltabuddies.helloWorld",
         "title": "Hello World"
       }
-    ]
+    ],
+    "views": {
+        "explorer": [
+            {
+                "id": "mydeltabuddies.aquarium",
+                "name": "MyDeltabuddies",
+                "type": "webview"
+            }
+        ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
