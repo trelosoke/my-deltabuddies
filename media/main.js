@@ -21,11 +21,20 @@ function drawRect() {
 }
 
 resizeCanvas();
-drawRect();
+// drawRect();
 
 const resizeObserver = new ResizeObserver(() => {
     resizeCanvas();
-    drawRect();
+    // drawRect();
 });
 
-resizeObserver.observe(document.body);
+// resizeObserver.observe(document.body);
+
+console.log(canvas.dataset.krisUri);
+
+const krisImage = new Image();
+
+krisImage.src = canvas.dataset.krisUri;
+krisImage.onload = () => {
+    ctx.drawImage(krisImage, 30, 30, krisImage.naturalWidth, krisImage.naturalHeight);
+};

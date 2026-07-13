@@ -13,16 +13,23 @@ export class MyProvider implements vscode.WebviewViewProvider {
         };
 
         const scriptUri = webviewView.webview.asWebviewUri(vscode.Uri.joinPath(mediaRoot, 'main.js'));
+
+        const krisUri = webviewView.webview.asWebviewUri(
+            vscode.Uri.joinPath(this.extensionUri, 'media', 'sprites', 'kris.png')
+        );
+
+        const cspSource = webviewView.webview.cspSource;
+
         const nonce = getNonce();
 
         webviewView.webview.html = `<!DOCTYPE html>
         <html lang="en">
         <head>
             <meta charset="UTF-8">
-            <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'nonce-${nonce}';">
+            <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'nonce-${nonce}'; img-src https://*.vscode-cdn.net https://*.vscode-resource.vscode-cdn.net data:;">
         </head>
         <body>
-            <canvas id="aquarium" height="300"></canvas>
+            <canvas id="aquarium" data-kris-uri="${krisUri}" height="300"></canvas>
             <script nonce="${nonce}" src="${scriptUri}"></script>
         </body>
         </html>`;
