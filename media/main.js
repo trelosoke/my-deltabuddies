@@ -1,11 +1,17 @@
+document.documentElement.style.padding = '0';
+document.documentElement.style.margin = '0';
+document.documentElement.style.height = '100%';
+
 document.body.style.padding = '0';
+document.body.style.margin = '0';
+document.body.style.height = '100%';
 
 /** @type {HTMLCanvasElement} */
 const canvas = document.getElementById('aquarium');
 
-canvas.style.position = 'absolute';
-canvas.style.top = '0';
-canvas.style.left = '0';
+canvas.style.display = 'block';
+canvas.width = document.body.clientWidth;
+canvas.height = document.body.clientHeight;
 
 /** @type {CanvasRenderingContext2D} */
 const ctx = canvas.getContext('2d');
@@ -30,17 +36,7 @@ const resizeObserver = new ResizeObserver(() => {
 
 // resizeObserver.observe(document.body);
 
-const krisImage = new Image();
 const krisWalk = new Image();
-
-// krisImage.src = canvas.dataset.krisUri;
-// krisImage.onload = () => {
-//     ctx.drawImage(krisImage, 0, 0, krisImage.naturalWidth, krisImage.naturalHeight);
-// };
-console.log(canvas.dataset.krisWalkUri);
-
-canvas.width = document.body.clientWidth;
-canvas.height = 200;
 
 const totalFrames = 4;
 const totalLines = 4;
@@ -82,7 +78,6 @@ function animateKrisWalk() {
         widthUpscale, heightUpscale
     );
 
-    console.log('Desenhando frame', currentFrame);
     ++frameCounter;
 
     requestAnimationFrame(animateKrisWalk);
