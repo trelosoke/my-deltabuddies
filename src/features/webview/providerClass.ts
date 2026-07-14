@@ -18,7 +18,9 @@ export class MyProvider implements vscode.WebviewViewProvider {
             vscode.Uri.joinPath(this.extensionUri, 'media', 'sprites', 'kris.png')
         );
 
-        const cspSource = webviewView.webview.cspSource;
+        const krisWalkUri = webviewView.webview.asWebviewUri(
+            vscode.Uri.joinPath(this.extensionUri, 'media', 'sprites', 'kris_walk.png')
+        );
 
         const nonce = getNonce();
 
@@ -29,7 +31,7 @@ export class MyProvider implements vscode.WebviewViewProvider {
             <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'nonce-${nonce}'; img-src https://*.vscode-cdn.net https://*.vscode-resource.vscode-cdn.net data:;">
         </head>
         <body>
-            <canvas id="aquarium" data-kris-uri="${krisUri}" height="300"></canvas>
+            <canvas id="aquarium" data-kris-uri="${krisUri}" data-kris-walk-uri="${krisWalkUri}"></canvas>
             <script nonce="${nonce}" src="${scriptUri}"></script>
         </body>
         </html>`;

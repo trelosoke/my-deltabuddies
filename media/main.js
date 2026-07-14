@@ -20,7 +20,7 @@ function drawRect() {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
-resizeCanvas();
+// resizeCanvas();
 // drawRect();
 
 const resizeObserver = new ResizeObserver(() => {
@@ -30,11 +30,62 @@ const resizeObserver = new ResizeObserver(() => {
 
 // resizeObserver.observe(document.body);
 
-console.log(canvas.dataset.krisUri);
-
 const krisImage = new Image();
+const krisWalk = new Image();
 
-krisImage.src = canvas.dataset.krisUri;
-krisImage.onload = () => {
-    ctx.drawImage(krisImage, 30, 30, krisImage.naturalWidth, krisImage.naturalHeight);
+// krisImage.src = canvas.dataset.krisUri;
+// krisImage.onload = () => {
+//     ctx.drawImage(krisImage, 0, 0, krisImage.naturalWidth, krisImage.naturalHeight);
+// };
+console.log(canvas.dataset.krisWalkUri);
+
+canvas.width = document.body.clientWidth;
+canvas.height = 200;
+
+const totalFrames = 4;
+const frameWidth = 32;
+const frameHeight = 48;
+
+let currentFrame = 0;
+let frameCounter = 0;
+const FRAMES_PER_SPRITE = 10;
+
+
+function animateKrisWalk() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (frameCounter % FRAMES_PER_SPRITE === 0) {
+        currentFrame = (currentFrame + 1) % totalFrames;
+    }
+
+    const scale = 2.5;
+
+    let widthUpscale = frameWidth * scale;
+    let heightUpscale = frameHeight * scale; 
+
+    ctx.fillStyle = 'lightblue';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(
+        krisWalk,
+        currentFrame * frameWidth, 0,
+        frameWidth, frameHeight,
+        0, 0,
+        widthUpscale, heightUpscale
+    );
+
+    console.log('Desenhando frame', currentFrame);
+    ++frameCounter;
+
+    requestAnimationFrame(animateKrisWalk);
+}
+
+krisWalk.onload = () => {
+    animateKrisWalk();
 };
+
+krisWalk.src = canvas.dataset.krisWalkUri;
+// krisImage.onload = () => {
+    
+// }
