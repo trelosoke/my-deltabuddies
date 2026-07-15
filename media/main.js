@@ -16,25 +16,22 @@ canvas.height = document.body.clientHeight;
 /** @type {CanvasRenderingContext2D} */
 const ctx = canvas.getContext('2d');
 
-function resizeCanvas() {
-    canvas.width = document.body.clientWidth;
-    // canvas.height = document.body.clientHeight;
-}
-
 function drawRect() {
     ctx.fillStyle = 'lightblue';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
-// resizeCanvas();
-// drawRect();
+drawRect();
+
+let newHeight = document.body.clientHeight;
+let newWidth = document.body.clientHeight;
 
 const resizeObserver = new ResizeObserver(() => {
-    resizeCanvas();
-    // drawRect();
+    newHeight = document.body.clientHeight;
+    newWidth = document.body.clientWidth;
 });
 
-// resizeObserver.observe(document.body);
+resizeObserver.observe(document.body);
 
 const krisWalk = new Image();
 
@@ -55,10 +52,6 @@ function animateKrisWalk() {
     // Adds conditional nesting for testing purposes
     if (frameCounter % FRAMES_PER_SPRITE === 0) {
         currentFrame = (currentFrame + 1) % totalFrames;
-        
-        if (currentFrame === 0) {
-            animationLine = (animationLine + 1) % totalLines;
-        }
     }
 
     const scale = 2.5;
@@ -66,8 +59,12 @@ function animateKrisWalk() {
     let widthUpscale = frameWidth * scale;
     let heightUpscale = frameHeight * scale;
 
-    ctx.fillStyle = 'lightblue';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    if (canvas.height !== newHeight || canvas.width !== newWidth) {
+        canvas.height = newHeight;
+        canvas.width = newWidth;
+    }
+
+    drawRect();
 
     ctx.imageSmoothingEnabled = false;
     ctx.drawImage(
@@ -88,6 +85,3 @@ krisWalk.onload = () => {
 };
 
 krisWalk.src = canvas.dataset.krisWalkUri;
-// krisImage.onload = () => {
-    
-// }
