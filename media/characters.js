@@ -82,6 +82,7 @@ export function createCharacter(spriteSheet, config) {
             return;
         }
         handleMovement(canvas);
+        ++frameCounter;
     }
 
     function draw(ctx) {
@@ -98,4 +99,6 @@ export function createCharacter(spriteSheet, config) {
             spriteHeightUpscale
         );
     }
+    
+    return { update, draw };
 }
