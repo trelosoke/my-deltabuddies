@@ -1,6 +1,6 @@
 import { createCharacter } from './characters.js';
 
-function startAnimation(canvas, ctx, characters) {
+export function startAnimation(canvas, ctx, characters) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     characters.forEach(character => {
