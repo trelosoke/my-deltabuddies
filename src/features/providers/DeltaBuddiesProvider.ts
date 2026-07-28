@@ -20,6 +20,12 @@ export class DeltaBuddiesProvider implements WebviewViewProvider {
             krisUri: webviewView.webview.asWebviewUri(
                 Uri.joinPath(spritesPath, 'kris.png')
             ).toString(),
+            susieUri: webviewView.webview.asWebviewUri(
+                Uri.joinPath(spritesPath, 'susie.png')
+            ).toString(),
+            ralseiUri: webviewView.webview.asWebviewUri(
+                Uri.joinPath(spritesPath, 'ralsei.png')
+            ).toString(),
         };
 
         return {charactersSpriteSheets, scriptUri, styleUri};
