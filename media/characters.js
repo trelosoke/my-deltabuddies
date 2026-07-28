@@ -1,4 +1,4 @@
-import { updateMovement, bounceMovement } from './movement';
+import { updateMovement, bounceMovement } from './movement.js';
 
 const FRAME_DELAY = 15;
 const DIRECTIONS = ['down', 'left', 'right', 'up'];
