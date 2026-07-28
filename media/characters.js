@@ -17,8 +17,8 @@ function pickRandomDirection(frameCounter, directionChange, currentDirection, co
 }
 
 export function createCharacter(spriteSheet, config) {
-    let posX = config.startX;
-    let posY = config.startY;
+    let posX = 0;
+    let posY = 0;
     let currentDirection = 'down';
     let currentFrame = 0;
     let isIdle = false;
@@ -33,6 +33,11 @@ export function createCharacter(spriteSheet, config) {
     const spriteHeightUpscale = config.spriteHeight * config.scale;
     const spriteCenterX = spriteWidthUpscale / 2;
     const spriteCenterY = spriteHeightUpscale / 2;
+
+    function init(canvas) {
+        posX = typeof config.startX === 'function' ? config.startX(canvas.width) : config.startX;
+        posY = typeof config.startY === 'function' ? config.startY(canvas.height) : config.startY;
+    }
 
     function handleIdle() {
         if (idleCounter >= idleDuration) {
@@ -100,5 +105,5 @@ export function createCharacter(spriteSheet, config) {
         );
     }
     
-    return { update, draw };
+    return { update, draw, init };
 }

@@ -46,6 +46,7 @@ characterData.forEach(data => {
     
     img.onload = () => {
         const character = createCharacter(img, data.config);
+        character.init(canvas);
         characters.push(character);
 
         console.log(characters);
