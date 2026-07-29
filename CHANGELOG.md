@@ -4,7 +4,12 @@ All notable changes to the "mydeltabuddies" extension will be documented in this
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [Unreleased]
+## [0.2.0] - 2026-07-29
+- Add multi-character support
+- Implement character factory with independent AI behaviors
+- Dynamic start position based on sidebar size
+- Characters bounce off edges individually
+- Support configurable character parameters (speed, idle, duration, sprite size)
 
 ## [0.1.0] - 2026-07-16
 
