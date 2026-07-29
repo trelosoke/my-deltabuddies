@@ -3,6 +3,10 @@
   "displayName": "my-deltabuddies",
   "description": "MyDeltabuddies is desktop aquarium extension for Visual Studio Code.",
   "version": "0.1.0",
+    "repository": {
+    "type": "git",
+    "url": "https://github.com/trelosoke/my-deltabuddies"
+  },
   "engines": {
     "vscode": "^1.125.0"
   },
