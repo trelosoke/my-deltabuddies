@@ -11,9 +11,10 @@ canvas.width = document.body.clientWidth;
 /** @type {CanvasRenderingContext2D} */
 const ctx = canvas.getContext('2d');
 
+const dimensions = { width: canvas.width, height: canvas.height };
 const resizeObserver = new ResizeObserver(() => {
-    canvas.height = document.body.clientHeight;
-    canvas.width = document.body.clientWidth;
+    dimensions.height = document.body.clientHeight;
+    dimensions.width = document.body.clientWidth;
 });
 
 resizeObserver.observe(document.body);
@@ -51,7 +52,7 @@ characterData.forEach(data => {
 
         console.log(characters);
         if (characters.length === characterData.length) {
-            startAnimation(canvas, ctx, characters);
+            startAnimation(canvas, ctx, characters, dimensions);
         }
     };
 
