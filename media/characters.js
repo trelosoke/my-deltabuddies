@@ -39,6 +39,25 @@ export function createCharacter(spriteSheet, config) {
         posY = typeof config.startY === 'function' ? config.startY(canvas.height) : config.startY;
     }
 
+    function clampPosition(canvas) {
+
+        if (posX < spriteCenterX) {
+            posX = spriteCenterX;
+        }
+
+        if (posX > canvas.width - spriteCenterX) {
+            posX = canvas.width - spriteCenterX;
+        }
+
+        if (posY < spriteCenterY) {
+            posY = spriteCenterY;
+        }
+
+        if (posY > canvas.height - spriteCenterY) {
+            posY = canvas.height - spriteCenterY;
+        }
+    }
+
     function handleIdle() {
         if (idleCounter >= idleDuration) {
             idleDuration = randomBetween(config.idleDurationRange.min, config.idleDurationRange.max);
@@ -105,5 +124,5 @@ export function createCharacter(spriteSheet, config) {
         );
     }
     
-    return { update, draw, init };
+    return { init, clampPosition, update, draw };
 }
