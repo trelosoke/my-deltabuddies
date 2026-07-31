@@ -1,4 +1,4 @@
-import { createCharacter } from './characters.js';
+import { createCharacter } from './character.js';
 import { charactersConfig } from './charactersConfig.js';
 import { startAnimation } from './animation.js';
 

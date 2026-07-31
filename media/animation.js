@@ -1,4 +1,4 @@
-import { createCharacter } from './characters.js';
+import { createCharacter } from './character.js';
 
 export function startAnimation(canvas, ctx, characters, dimensions) {
     if (dimensions.height !== canvas.height || dimensions.width !== canvas.width) {

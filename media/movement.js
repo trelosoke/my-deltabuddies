@@ -1,12 +1,12 @@
-export function updateMovement(posX, posY, currentDirection, speed) {
+export function updateMovement(character, speed) {
     const movements = {
-        right: () => ({ posX: posX + speed, posY }),
-        left: () => ({ posX: posX - speed, posY }),
-        up: () => ({ posX, posY: posY - speed }),
-        down: () => ({ posX, posY: posY + speed })
+        right: () => { character.posX += speed; },
+        left: () => { character.posX -= speed; },
+        up: () => { character.posY -= speed; },
+        down: () => { character.posY += speed; }
     };
 
-    return movements[currentDirection]();
+    movements[character.currentDirection]();
 }
 
 export function bounceMovement(pos, spriteCenter, speed, min, max, [towardMin, towardMax]) {
