@@ -1,21 +1,11 @@
-import { createCharacter } from './characters.js';
+import { CharacterManager } from './characterManager.js';
 
-export function startAnimation(canvas, ctx, characters, dimensions) {
-    if (dimensions.height !== canvas.height || dimensions.width !== canvas.width) {
-        canvas.height = dimensions.height;
-        canvas.width = dimensions.width;
-
-        characters.forEach(character => {
-            character.clampPosition(canvas);
-        });
-    }
-
+export function startAnimation(canvas, ctx, manager, dimensions) {
+    manager.handleResize(canvas, dimensions);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    characters.forEach(character => {
-        character.update(canvas);
-        character.draw(ctx);
-    });
+    manager.updateAll(canvas);
+    manager.drawAll(ctx);
 
-    requestAnimationFrame(() => startAnimation(canvas, ctx, characters, dimensions));
+    requestAnimationFrame(() => startAnimation(canvas, ctx, manager, dimensions));
 }
