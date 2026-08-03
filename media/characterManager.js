@@ -36,7 +36,7 @@ export class CharacterManager {
     }
 
     handleResize(canvas, dimensions) {
-        if (this.#canvasSizeChanged()) {
+        if (this.#canvasSizeChanged(canvas, dimensions)) {
             this.#applyResize(canvas, dimensions);
             this.#characters.forEach(character => character.clampPosition(canvas));
         }
