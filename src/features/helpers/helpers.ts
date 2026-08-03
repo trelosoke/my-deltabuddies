@@ -6,5 +6,5 @@ export function getNonce(): string {
 }
 
 export function escapeJsonCharacters(charactersJson: string): string {
-    return charactersJson.replaceAll(/"/g, '&quot;');
+    return charactersJson.replaceAll('"', '&quot;');
 }
