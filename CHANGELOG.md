@@ -4,6 +4,12 @@ All notable changes to the "mydeltabuddies" extension will be documented in this
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.2.1] - 2026-08-03
+- Fix characters escaping the canvas on sidebar resize
+- Fix canvas resize flicker with mutable dimensions object
+- Migrate character system to class-based architecture with centralized lifecycle management in CharacterManager
+- Split animation start logic from character loading in the renderer
+
 ## [0.2.0] - 2026-07-29
 - Add multi-character support
 - Implement character factory with independent AI behaviors
