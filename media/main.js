@@ -1,6 +1,19 @@
-import { createCharacter } from './character.js';
+import { Character } from './character.js';
+import { CharacterManager } from './characterManager.js';
 import { charactersConfig } from './charactersConfig.js';
 import { startAnimation } from './animation.js';
+
+function loadCharacter(data) {
+    const img = new Image();
+
+    img.onload = () => {
+        const character = new Character(img, data.config);
+        character.init(canvas);
+        manager.addCharacter(character);
+    };
+
+    img.src = data.src;
+}
 
 /** @type {HTMLCanvasElement} */
 const canvas = document.getElementById('aquarium');
@@ -18,8 +31,6 @@ const resizeObserver = new ResizeObserver(() => {
 });
 
 resizeObserver.observe(document.body);
-
-const characters = [];
 
 /** @type {{krisUri: string}} */
 const spritesSource = JSON.parse(canvas.dataset.characters);
@@ -42,19 +53,7 @@ const characterData = [
     }
 ];
 
-characterData.forEach(data => {
-    const img = new Image();
-    
-    img.onload = () => {
-        const character = createCharacter(img, data.config);
-        character.init(canvas);
-        characters.push(character);
+const manager = new CharacterManager();
+startAnimation(canvas, ctx, manager, dimensions);
 
-        console.log(characters);
-        if (characters.length === characterData.length) {
-            startAnimation(canvas, ctx, characters, dimensions);
-        }
-    };
-
-    img.src = data.src;
-});
+characterData.forEach(data => loadCharacter(data));
