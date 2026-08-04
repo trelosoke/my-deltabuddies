@@ -1,44 +1,131 @@
 export const charactersConfig = {
     kris: {
-        spriteWidth: 32,
-        spriteHeight: 48,
-        totalFrames: 4,
-        totalAnimationLines: 4,
-        scale: 2,
-        speed: 0.4,
-        directionLine: { down: 0, left: 1, right: 2, up: 3 },
-        startX: (canvasWidth) => canvasWidth / 2,
-        startY: (canvasHeight) => canvasHeight / 2,
-        idleDurationRange: { min: 90, max: 260 },
-        idleTriggerRange: { min: 300, max: 720 },
-        directionChangeRange: { min: 80, max: 260 }
+        layout: {
+            spriteWidth: 32,
+            spriteHeight: 48,
+            scale: 2
+        },
+        animations: {
+            walk: {
+                type: 'movement',
+                speed: 0.4,
+                frameDelay: 15,
+                startRow: 0,
+                rowCount: 4,
+                spritesPerRow: 4,
+                directionMode: '4way',
+                directionOrder: ['down', 'right', 'left', 'up']
+            },
+
+            run: {
+                type: 'movement',
+                speed: 0.8,
+                frameDelay: 7.5,
+                startRow: 0,
+                rowCount: 4,
+                spritesPerRow: 4,
+                directionMode: '4way',
+                directionOrder: ['down', 'right', 'left', 'up']
+            },
+
+            v_sign: {
+                type: 'action',
+                frameDelay: 8,
+                startRow: 4,
+                rowCount: 1,
+                spritesPerRow: 6,
+                directionMode: 'fixed'
+            }
+        },
+        
+        activeAnimation: 'walk',
+        
+        behavior: {
+            startX: (canvasWidth) => canvasWidth / 2,
+            startY: (canvasHeight) => canvasHeight / 2,
+            idleDurationRange: { min: 90, max: 260 },
+            idleTriggerRange: { min: 300, max: 720 },
+            directionChangeRange: { min: 80, max: 260 }
+        },
     },
     susie: {
-        spriteWidth: 38,
-        spriteHeight: 50,
-        totalFrames: 4,
-        totalAnimationLines: 4,
-        scale: 2,
-        speed: 0.4,
-        directionLine: { down: 0, left: 1, right: 2, up: 3 },
-        startX: (canvasWidth) => canvasWidth / 2,
-        startY: (canvasHeight) => canvasHeight / 2,
-        idleDurationRange: { min: 90, max: 260 },
-        idleTriggerRange: { min: 300, max: 720 },
-        directionChangeRange: { min: 80, max: 260 },
+        layout: {
+            spriteWidth: 38,
+            spriteHeight: 50,
+            scale: 2
+        },
+        animations: {
+            walk: {
+                type: 'movement',
+                speed: 0.4,
+                frameDelay: 15,
+                startRow: 0,
+                rowCount: 4,
+                spritesPerRow: 4,
+                directionMode: '4way',
+                directionOrder: ['down', 'right', 'left', 'up']
+            },
+
+            run: {
+                type: 'movement',
+                speed: 0.8,
+                frameDelay: 7.5,
+                startRow: 0,
+                rowCount: 4,
+                spritesPerRow: 4,
+                directionMode: '4way',
+                directionOrder: ['down', 'right', 'left', 'up']
+            }
+        },
+
+        activeAnimation: 'walk',
+
+        behavior: {
+            startX: (canvasWidth) => canvasWidth / 2,
+            startY: (canvasHeight) => canvasHeight / 2,
+            idleDurationRange: { min: 90, max: 260 },
+            idleTriggerRange: { min: 300, max: 720 },
+            directionChangeRange: { min: 80, max: 260 }
+        }
     },
     ralsei: {
-        spriteWidth: 32,
-        spriteHeight: 48,
-        totalFrames: 4,
-        totalAnimationLines: 4,
-        scale: 2,
-        speed: 0.4,
-        directionLine: { down: 0, left: 1, right: 2, up: 3 },
-        startX: (canvasWidth) => canvasWidth / 2,
-        startY: (canvasHeight) => canvasHeight / 2,
-        idleDurationRange: { min: 90, max: 260 },
-        idleTriggerRange: { min: 300, max: 720 },
-        directionChangeRange: { min: 80, max: 260 },
+        layout: {
+            spriteWidth: 32,
+            spriteHeight: 48,
+            scale: 2
+        },
+        animations: {
+            walk: {
+                type: 'movement',
+                speed: 0.4,
+                frameDelay: 15,
+                startRow: 0,
+                rowCount: 4,
+                spritesPerRow: 4,
+                directionMode: '4way',
+                directionOrder: ['down', 'right', 'left', 'up']
+            },
+
+            run: {
+                type: 'movement',
+                speed: 0.8,
+                frameDelay: 7.5,
+                startRow: 0,
+                rowCount: 4,
+                spritesPerRow: 4,
+                directionMode: '4way',
+                directionOrder: ['down', 'right', 'left', 'up']
+            }
+        },
+
+        activeAnimation: 'walk',
+
+        behavior: {
+            startX: (canvasWidth) => canvasWidth / 2,
+            startY: (canvasHeight) => canvasHeight / 2,
+            idleDurationRange: { min: 90, max: 260 },
+            idleTriggerRange: { min: 300, max: 720 },
+            directionChangeRange: { min: 80, max: 260 }
+        }
     },
 };
