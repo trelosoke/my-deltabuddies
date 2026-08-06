@@ -136,6 +136,18 @@ export class Character {
         updateMovement(this, speed);
     }
 
+    get #animationRow() {
+        const startRow = this.animations[this.currentAnimation]?.startRow ?? 0;
+        const directionMode = this.animations[this.currentAnimation]?.directionMode ?? 'fixed';
+        const directionOrder = this.animations[this.currentAnimation].directionOrder ?? [];
+
+        if (directionMode === '4way') {
+            return startRow + directionOrder.indexOf(this.currentDirection);
+        }
+
+        return this.animations[this.currentAnimation].startRow;
+    }
+
     update(canvas) {
         if (this.isIdle) {
             this.#handleIdle();
@@ -151,7 +163,7 @@ export class Character {
         ctx.drawImage(
             this.spriteSheet,
             this.currentSprite * this.layout.spriteWidth, 
-            this.animations[this.currentAnimation].directionOrder.indexOf(this.currentDirection) * this.layout.spriteHeight,
+            this.#animationRow * this.layout.spriteHeight,
             this.layout.spriteWidth, 
             this.layout.spriteHeight,
             this.posX - this.spriteCenterX, 
