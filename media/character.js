@@ -1,8 +1,5 @@
 import { updateMovement, bounceMovement } from './movement.js';
 
-const FRAME_DELAY = 15;
-const DIRECTIONS = ['down', 'left', 'right', 'up'];
-
 export class Character {
     #DEFAULT_SPEED = 0;
     #DEFAULT_FRAME_DELAY = 1;
@@ -66,9 +63,13 @@ export class Character {
         return Math.floor(Math.random() * (max - min) + min);
     }
 
+    #canPickNewDirection() {
+        return this.frameCounter % this.directionChange === 0;
+    }
+
     #pickRandomDirection() {
         const directionOrder = this.animations[this.currentAnimation].directionOrder;
-        if (directionOrder && this.frameCounter % this.directionChange === 0) {
+        if (directionOrder && this.#canPickNewDirection()) {
             this.directionChange = this.#randomBetween(
                 this.behavior.directionChangeRange.min, 
                 this.behavior.directionChangeRange.max
@@ -115,6 +116,7 @@ export class Character {
         }
 
         this.#pickRandomDirection();
+
 
         const speed = this.behavior.speeds[this.currentAnimation] ?? this.#DEFAULT_SPEED;
 
