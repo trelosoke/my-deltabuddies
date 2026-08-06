@@ -8,7 +8,6 @@ export const charactersConfig = {
         animations: {
             walk: {
                 type: 'movement',
-                speed: 0.4,
                 frameDelay: 15,
                 startRow: 0,
                 rowCount: 4,
@@ -41,6 +40,10 @@ export const charactersConfig = {
         activeAnimation: 'walk',
         
         behavior: {
+            speeds: {
+                walk: 0.4,
+                run: 0.8,
+            },
             startX: (canvasWidth) => canvasWidth / 2,
             startY: (canvasHeight) => canvasHeight / 2,
             idleDurationRange: { min: 90, max: 260 },
@@ -57,7 +60,6 @@ export const charactersConfig = {
         animations: {
             walk: {
                 type: 'movement',
-                speed: 0.4,
                 frameDelay: 15,
                 startRow: 0,
                 rowCount: 4,
@@ -68,7 +70,6 @@ export const charactersConfig = {
 
             run: {
                 type: 'movement',
-                speed: 0.8,
                 frameDelay: 7.5,
                 startRow: 0,
                 rowCount: 4,
@@ -81,6 +82,10 @@ export const charactersConfig = {
         activeAnimation: 'walk',
 
         behavior: {
+            speeds: {
+                walk: 0.4,
+                run: 0.8,
+            },
             startX: (canvasWidth) => canvasWidth / 2,
             startY: (canvasHeight) => canvasHeight / 2,
             idleDurationRange: { min: 90, max: 260 },
@@ -97,7 +102,6 @@ export const charactersConfig = {
         animations: {
             walk: {
                 type: 'movement',
-                speed: 0.4,
                 frameDelay: 15,
                 startRow: 0,
                 rowCount: 4,
@@ -108,7 +112,6 @@ export const charactersConfig = {
 
             run: {
                 type: 'movement',
-                speed: 0.8,
                 frameDelay: 7.5,
                 startRow: 0,
                 rowCount: 4,
@@ -121,6 +124,10 @@ export const charactersConfig = {
         activeAnimation: 'walk',
 
         behavior: {
+            speeds: {
+                walk: 0.4,
+                run: 0.8,
+            },
             startX: (canvasWidth) => canvasWidth / 2,
             startY: (canvasHeight) => canvasHeight / 2,
             idleDurationRange: { min: 90, max: 260 },
