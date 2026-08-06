@@ -14,7 +14,7 @@ export class Character {
         this.posY = 0;
         this.currentDirection = 'down';
         this.currentSprite = 0;
-        this.currentAnimation = 'walk';
+        this.currentAnimation = this.animations.activeAnimation;
         this.frameAccumulator = 0;
         this.isIdle = false;
         this.idleCounter = 0;
