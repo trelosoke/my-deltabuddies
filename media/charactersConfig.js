@@ -14,7 +14,7 @@ export const charactersConfig = {
                 rowCount: 4,
                 spritesPerRow: 4,
                 directionMode: '4way',
-                directionOrder: ['down', 'right', 'left', 'up']
+                directionOrder: ['down', 'left', 'right', 'up']
             },
 
             run: {
@@ -25,7 +25,7 @@ export const charactersConfig = {
                 rowCount: 4,
                 spritesPerRow: 4,
                 directionMode: '4way',
-                directionOrder: ['down', 'right', 'left', 'up']
+                directionOrder: ['down', 'left', 'right', 'up']
             },
 
             v_sign: {
@@ -63,7 +63,7 @@ export const charactersConfig = {
                 rowCount: 4,
                 spritesPerRow: 4,
                 directionMode: '4way',
-                directionOrder: ['down', 'right', 'left', 'up']
+                directionOrder: ['down', 'left', 'right', 'up']
             },
 
             run: {
@@ -74,7 +74,7 @@ export const charactersConfig = {
                 rowCount: 4,
                 spritesPerRow: 4,
                 directionMode: '4way',
-                directionOrder: ['down', 'right', 'left', 'up']
+                directionOrder: ['down', 'left', 'right', 'up']
             }
         },
 
@@ -103,7 +103,7 @@ export const charactersConfig = {
                 rowCount: 4,
                 spritesPerRow: 4,
                 directionMode: '4way',
-                directionOrder: ['down', 'right', 'left', 'up']
+                directionOrder: ['down', 'left', 'right', 'up']
             },
 
             run: {
@@ -114,7 +114,7 @@ export const charactersConfig = {
                 rowCount: 4,
                 spritesPerRow: 4,
                 directionMode: '4way',
-                directionOrder: ['down', 'right', 'left', 'up']
+                directionOrder: ['down', 'left', 'right', 'up']
             }
         },
 
