@@ -5,6 +5,7 @@ const DIRECTIONS = ['down', 'left', 'right', 'up'];
 
 export class Character {
     #DEFAULT_SPEED = 0;
+    #DEFAULT_FRAME_DELAY = 1;
 
     constructor(spriteSheet, config) {
         this.spriteSheet = spriteSheet;
@@ -15,8 +16,9 @@ export class Character {
         this.posX = 0;
         this.posY = 0;
         this.currentDirection = 'down';
-        this.currentFrame = 0;
+        this.currentSprite = 0;
         this.currentAnimation = 'walk';
+        this.frameAccumulator = 0;
         this.isIdle = false;
         this.idleCounter = 0;
         this.frameCounter = 1;
@@ -89,7 +91,7 @@ export class Character {
         }
 
         ++this.idleCounter;
-        this.currentFrame = 0;
+        this.currentSprite = 0;
     }
 
     #handleMovement(canvas) {
@@ -104,8 +106,12 @@ export class Character {
             return;
         }
 
-        if (this.frameCounter % FRAME_DELAY === 0) {
-            this.currentFrame = (this.currentFrame + 1) % this.animations[this.currentAnimation].spritesPerRow;
+        const frameDelay = this.animations[this.currentAnimation]?.frameDelay ?? this.#DEFAULT_FRAME_DELAY;
+        this.frameAccumulator += 1 / frameDelay;
+
+        if (this.frameAccumulator >= 1.0) {
+            this.currentSprite = (this.currentSprite + 1) % this.animations[this.currentAnimation].spritesPerRow;
+            this.frameAccumulator -= 1.0;
         }
 
         this.#pickRandomDirection();
@@ -142,7 +148,7 @@ export class Character {
         ctx.imageSmoothingEnabled = false;
         ctx.drawImage(
             this.spriteSheet,
-            this.currentFrame * this.layout.spriteWidth, 
+            this.currentSprite * this.layout.spriteWidth, 
             this.animations[this.currentAnimation].directionOrder.indexOf(this.currentDirection) * this.layout.spriteHeight,
             this.layout.spriteWidth, 
             this.layout.spriteHeight,
