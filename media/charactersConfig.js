@@ -29,7 +29,7 @@ export const charactersConfig = {
 
             v_sign: {
                 type: 'action',
-                frameDelay: 8,
+                frameDelay: 4,
                 startRow: 4,
                 rowCount: 1,
                 spritesPerRow: 6,
@@ -42,7 +42,7 @@ export const charactersConfig = {
         behavior: {
             speeds: {
                 walk: 0.4,
-                run: 0.8,
+                run: 1.2,
             },
             startX: (canvasWidth) => canvasWidth / 2,
             startY: (canvasHeight) => canvasHeight / 2,
@@ -84,7 +84,7 @@ export const charactersConfig = {
         behavior: {
             speeds: {
                 walk: 0.4,
-                run: 0.8,
+                run: 1.5,
             },
             startX: (canvasWidth) => canvasWidth / 2,
             startY: (canvasHeight) => canvasHeight / 2,
@@ -126,7 +126,7 @@ export const charactersConfig = {
         behavior: {
             speeds: {
                 walk: 0.4,
-                run: 0.8,
+                run: 1.2,
             },
             startX: (canvasWidth) => canvasWidth / 2,
             startY: (canvasHeight) => canvasHeight / 2,
