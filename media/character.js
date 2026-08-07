@@ -65,7 +65,11 @@ export class Character {
     }
 
     #canPickNewDirection() {
-        return this.frameCounter % this.directionChange === 0;
+        return this.#shoudTrigger(this.directionChange);
+    }
+
+    #shoudTrigger(interval) {
+        return this.frameCounter % interval === 0;
     }
 
     #pickRandomDirection() {
@@ -97,7 +101,7 @@ export class Character {
     }
 
     #handleMovement(canvas) {
-        if (this.frameCounter % this.idleTrigger === 0) {
+        if (this.#shoudTrigger(this.idleTrigger)) {
             this.idleTrigger = this.#randomBetween(
                 this.behavior.idleTriggerRange.min, 
                 this.behavior.idleTriggerRange.max
