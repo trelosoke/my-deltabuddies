@@ -18,7 +18,6 @@ export const charactersConfig = {
 
             run: {
                 type: 'movement',
-                speed: 0.8,
                 frameDelay: 7.5,
                 startRow: 0,
                 rowCount: 4,
