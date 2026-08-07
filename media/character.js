@@ -8,13 +8,14 @@ export class Character {
         this.spriteSheet = spriteSheet;
         this.layout = config.layout;
         this.animations = config.animations;
+        this.activeAnimation = config.activeAnimation;
         this.behavior = config.behavior; 
 
         this.posX = 0;
         this.posY = 0;
         this.currentDirection = 'down';
         this.currentSprite = 0;
-        this.currentAnimation = this.animations.activeAnimation;
+        this.currentAnimation = this.activeAnimation;
         this.frameAccumulator = 0;
         this.isIdle = false;
         this.idleCounter = 0;
