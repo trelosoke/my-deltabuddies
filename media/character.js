@@ -1,47 +1,52 @@
 import { updateMovement, bounceMovement } from './movement.js';
 
-const FRAME_DELAY = 15;
-const DIRECTIONS = ['down', 'left', 'right', 'up'];
-
 export class Character {
+    #DEFAULT_SPEED = 0;
+    #DEFAULT_FRAME_DELAY = 1;
+
     constructor(spriteSheet, config) {
         this.spriteSheet = spriteSheet;
-        this.config = config;
+        this.layout = config.layout;
+        this.animations = config.animations;
+        this.activeAnimation = config.activeAnimation;
+        this.behavior = config.behavior; 
 
         this.posX = 0;
         this.posY = 0;
         this.currentDirection = 'down';
-        this.currentFrame = 0;
+        this.currentSprite = 0;
+        this.currentAnimation = this.activeAnimation;
+        this.frameAccumulator = 0;
         this.isIdle = false;
         this.idleCounter = 0;
         this.frameCounter = 1;
 
-        this.spriteWidthUpscale = this.config.spriteWidth * this.config.scale;
-        this.spriteHeightUpscale = this.config.spriteHeight * this.config.scale;
+        this.spriteWidthUpscale = this.layout.spriteWidth * this.layout.scale;
+        this.spriteHeightUpscale = this.layout.spriteHeight * this.layout.scale;
         this.spriteCenterX = this.spriteWidthUpscale / 2;
         this.spriteCenterY = this.spriteHeightUpscale / 2;
         
         this.idleDuration = this.#randomBetween(
-            this.config.idleDurationRange.min, 
-            this.config.idleDurationRange.max
+            this.behavior.idleDurationRange.min, 
+            this.behavior.idleDurationRange.max
         );
         this.idleTrigger = this.#randomBetween(
-            this.config.idleTriggerRange.min,
-            this.config.idleTriggerRange.max
+            this.behavior.idleTriggerRange.min,
+            this.behavior.idleTriggerRange.max
         );
         this.directionChange = this.#randomBetween(
-            this.config.directionChangeRange.min,
-            this.config.directionChangeRange.max
+            this.behavior.directionChangeRange.min,
+            this.behavior.directionChangeRange.max
         );
     }
 
     init(canvas) {
-        this.posX = typeof this.config.startX === 'function' 
-            ? this.config.startX(canvas.width) 
-            : this.config.startX;
-        this.posY = typeof this.config.startY === 'function' 
-            ? this.config.startY(canvas.height) 
-            : this.config.startY;
+        this.posX = typeof this.behavior.startX === 'function' 
+            ? this.behavior.startX(canvas.width) 
+            : this.behavior.startX;
+        this.posY = typeof this.behavior.startY === 'function' 
+            ? this.behavior.startY(canvas.height) 
+            : this.behavior.startY;
     }
 
     #clamp(value, min, max) {
@@ -59,21 +64,31 @@ export class Character {
         return Math.floor(Math.random() * (max - min) + min);
     }
 
+    #canPickNewDirection() {
+        return this.#shoudTrigger(this.directionChange);
+    }
+
+    #shoudTrigger(interval) {
+        return this.frameCounter % interval === 0;
+    }
+
     #pickRandomDirection() {
-        if (this.frameCounter % this.directionChange === 0) {
+        const directionOrder = this.animations[this.currentAnimation].directionOrder;
+        if (directionOrder && this.#canPickNewDirection()) {
             this.directionChange = this.#randomBetween(
-                this.config.directionChangeRange.min, 
-                this.config.directionChangeRange.max
+                this.behavior.directionChangeRange.min, 
+                this.behavior.directionChangeRange.max
             );
-            this.currentDirection = DIRECTIONS[Math.floor(Math.random() * 4)];
+            
+            this.currentDirection = directionOrder[Math.floor(Math.random() * directionOrder.length)];
         }
     }
 
     #handleIdle() {
         if (this.idleCounter >= this.idleDuration) {
             this.idleDuration = this.#randomBetween(
-                this.config.idleDurationRange.min, 
-                this.config.idleDurationRange.max
+                this.behavior.idleDurationRange.min, 
+                this.behavior.idleDurationRange.max
             );
 
             this.isIdle = false;
@@ -82,14 +97,14 @@ export class Character {
         }
 
         ++this.idleCounter;
-        this.currentFrame = 0;
+        this.currentSprite = 0;
     }
 
     #handleMovement(canvas) {
-        if (this.frameCounter % this.idleTrigger === 0) {
+        if (this.#shoudTrigger(this.idleTrigger)) {
             this.idleTrigger = this.#randomBetween(
-                this.config.idleTriggerRange.min, 
-                this.config.idleTriggerRange.max
+                this.behavior.idleTriggerRange.min, 
+                this.behavior.idleTriggerRange.max
             );
             
             this.isIdle = true;
@@ -97,17 +112,24 @@ export class Character {
             return;
         }
 
-        if (this.frameCounter % FRAME_DELAY === 0) {
-            this.currentFrame = (this.currentFrame + 1) % this.config.totalFrames;
+        const frameDelay = this.animations[this.currentAnimation]?.frameDelay ?? this.#DEFAULT_FRAME_DELAY;
+        this.frameAccumulator += 1 / frameDelay;
+
+        if (this.frameAccumulator >= 1.0) {
+            this.currentSprite = (this.currentSprite + 1) % this.animations[this.currentAnimation].spritesPerRow;
+            this.frameAccumulator -= 1.0;
         }
 
         this.#pickRandomDirection();
 
+
+        const speed = this.behavior.speeds[this.currentAnimation] ?? this.#DEFAULT_SPEED;
+
         let collisionCorrectedDirectionX = bounceMovement(
-            this.posX, this.spriteCenterX, this.config.speed, this.spriteCenterX, canvas.width, ['left', 'right']
+            this.posX, this.spriteCenterX, speed, this.spriteCenterX, canvas.width, ['left', 'right']
         );
         let collisionCorrectedDirectionY = bounceMovement(
-            this.posY, this.spriteCenterY, this.config.speed, this.spriteCenterY, canvas.height, ['up', 'down']
+            this.posY, this.spriteCenterY, speed, this.spriteCenterY, canvas.height, ['up', 'down']
         );
 
         if (collisionCorrectedDirectionX) {
@@ -116,7 +138,19 @@ export class Character {
             this.currentDirection = collisionCorrectedDirectionY;
         }
 
-        updateMovement(this, this.config.speed);
+        updateMovement(this, speed);
+    }
+
+    get #animationRow() {
+        const startRow = this.animations[this.currentAnimation]?.startRow ?? 0;
+        const directionMode = this.animations[this.currentAnimation]?.directionMode ?? 'fixed';
+        const directionOrder = this.animations[this.currentAnimation].directionOrder ?? [];
+
+        if (directionMode === '4way') {
+            return startRow + directionOrder.indexOf(this.currentDirection);
+        }
+
+        return this.animations[this.currentAnimation].startRow;
     }
 
     update(canvas) {
@@ -133,10 +167,10 @@ export class Character {
         ctx.imageSmoothingEnabled = false;
         ctx.drawImage(
             this.spriteSheet,
-            this.currentFrame * this.config.spriteWidth, 
-            this.config.directionLine[this.currentDirection] * this.config.spriteHeight,
-            this.config.spriteWidth, 
-            this.config.spriteHeight,
+            this.currentSprite * this.layout.spriteWidth, 
+            this.#animationRow * this.layout.spriteHeight,
+            this.layout.spriteWidth, 
+            this.layout.spriteHeight,
             this.posX - this.spriteCenterX, 
             this.posY - this.spriteCenterY,
             this.spriteWidthUpscale, 
