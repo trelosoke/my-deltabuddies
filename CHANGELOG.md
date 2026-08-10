@@ -4,6 +4,13 @@ All notable changes to the "mydeltabuddies" extension will be documented in this
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.3.0] - 2026-08-10
+
+- Add multi-animation support with data-driven config
+- Implement floating-point frameDelay with accumulator model
+- Add private helpers and animation row getter
+- Simplify draw() to use data-driven rendering
+
 ## [0.2.1] - 2026-08-03
 - Fix characters escaping the canvas on sidebar resize
 - Fix canvas resize flicker with mutable dimensions object
