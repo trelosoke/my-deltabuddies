@@ -36,7 +36,7 @@ export const charactersConfig = {
             }
         },
         
-        activeAnimation: 'walk',
+        startingAnimation: 'walk',
         
         behavior: {
             speeds: {
@@ -78,7 +78,7 @@ export const charactersConfig = {
             }
         },
 
-        activeAnimation: 'walk',
+        startingAnimation: 'walk',
 
         behavior: {
             speeds: {
@@ -120,7 +120,7 @@ export const charactersConfig = {
             }
         },
 
-        activeAnimation: 'walk',
+        startingAnimation: 'walk',
 
         behavior: {
             speeds: {

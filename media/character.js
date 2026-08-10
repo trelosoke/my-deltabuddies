@@ -4,18 +4,20 @@ export class Character {
     #DEFAULT_SPEED = 0;
     #DEFAULT_FRAME_DELAY = 1;
 
+    #currentAnimation;
+
     constructor(spriteSheet, config) {
         this.spriteSheet = spriteSheet;
         this.layout = config.layout;
         this.animations = config.animations;
-        this.activeAnimation = config.activeAnimation;
+        this.startingAnimation = config.startingAnimation;
         this.behavior = config.behavior; 
 
         this.posX = 0;
         this.posY = 0;
         this.currentDirection = 'down';
         this.currentSprite = 0;
-        this.currentAnimation = this.activeAnimation;
+        this.#currentAnimation = this.startingAnimation ?? 'walk';
         this.frameAccumulator = 0;
         this.isIdle = false;
         this.idleCounter = 0;
@@ -73,7 +75,7 @@ export class Character {
     }
 
     #pickRandomDirection() {
-        const directionOrder = this.animations[this.currentAnimation].directionOrder;
+        const directionOrder = this.animations[this.#currentAnimation].directionOrder;
         if (directionOrder && this.#canPickNewDirection()) {
             this.directionChange = this.#randomBetween(
                 this.behavior.directionChangeRange.min, 
@@ -112,18 +114,18 @@ export class Character {
             return;
         }
 
-        const frameDelay = this.animations[this.currentAnimation]?.frameDelay ?? this.#DEFAULT_FRAME_DELAY;
+        const frameDelay = this.animations[this.#currentAnimation]?.frameDelay ?? this.#DEFAULT_FRAME_DELAY;
         this.frameAccumulator += 1 / frameDelay;
 
         if (this.frameAccumulator >= 1.0) {
-            this.currentSprite = (this.currentSprite + 1) % this.animations[this.currentAnimation].spritesPerRow;
+            this.currentSprite = (this.currentSprite + 1) % this.animations[this.#currentAnimation].spritesPerRow;
             this.frameAccumulator -= 1.0;
         }
 
         this.#pickRandomDirection();
 
 
-        const speed = this.behavior.speeds[this.currentAnimation] ?? this.#DEFAULT_SPEED;
+        const speed = this.behavior.speeds[this.#currentAnimation] ?? this.#DEFAULT_SPEED;
 
         let collisionCorrectedDirectionX = bounceMovement(
             this.posX, this.spriteCenterX, speed, this.spriteCenterX, canvas.width, ['left', 'right']
@@ -142,15 +144,15 @@ export class Character {
     }
 
     get #animationRow() {
-        const startRow = this.animations[this.currentAnimation]?.startRow ?? 0;
-        const directionMode = this.animations[this.currentAnimation]?.directionMode ?? 'fixed';
-        const directionOrder = this.animations[this.currentAnimation].directionOrder ?? [];
+        const startRow = this.animations[this.#currentAnimation]?.startRow ?? 0;
+        const directionMode = this.animations[this.#currentAnimation]?.directionMode ?? 'fixed';
+        const directionOrder = this.animations[this.#currentAnimation].directionOrder ?? [];
 
         if (directionMode === '4way') {
             return startRow + directionOrder.indexOf(this.currentDirection);
         }
 
-        return this.animations[this.currentAnimation].startRow;
+        return this.animations[this.#currentAnimation].startRow;
     }
 
     update(canvas) {
