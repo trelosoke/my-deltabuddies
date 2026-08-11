@@ -154,6 +154,17 @@ export class Character {
 
         return this.animations[this.#currentAnimation].startRow;
     }
+    get currentAnimation() {
+        return this.#currentAnimation;
+    }
+
+    set currentAnimation(name) {
+        if (this.animations[name]) {
+            this.frameAccumulator = 0;
+            this.currentSprite = 0;
+            this.#currentAnimation = name;
+        }
+    }
 
     update(canvas) {
         if (this.isIdle) {
