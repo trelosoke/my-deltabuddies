@@ -86,6 +86,16 @@ export class Character {
         }
     }
 
+    #advanceAnimationSprite() {
+        const frameDelay = this.animations[this.#currentAnimation]?.frameDelay ?? this.#DEFAULT_FRAME_DELAY;
+        this.frameAccumulator += 1 / frameDelay;
+
+        if (this.frameAccumulator >= 1.0) {
+            this.currentSprite = (this.currentSprite + 1) % this.animations[this.#currentAnimation].spritesPerRow;
+            this.frameAccumulator -= 1.0;
+        }
+    }
+
     #handleIdle() {
         if (this.idleCounter >= this.idleDuration) {
             this.idleDuration = this.#randomBetween(
@@ -114,14 +124,7 @@ export class Character {
             return;
         }
 
-        const frameDelay = this.animations[this.#currentAnimation]?.frameDelay ?? this.#DEFAULT_FRAME_DELAY;
-        this.frameAccumulator += 1 / frameDelay;
-
-        if (this.frameAccumulator >= 1.0) {
-            this.currentSprite = (this.currentSprite + 1) % this.animations[this.#currentAnimation].spritesPerRow;
-            this.frameAccumulator -= 1.0;
-        }
-
+        this.#advanceAnimationSprite();
         this.#pickRandomDirection();
 
 
