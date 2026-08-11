@@ -5,6 +5,9 @@ export class Character {
     #DEFAULT_FRAME_DELAY = 1;
 
     #currentAnimation;
+    #isActing;
+    #sustainCounter;
+    #sustainLimit;
 
     constructor(spriteSheet, config) {
         this.spriteSheet = spriteSheet;
@@ -19,6 +22,9 @@ export class Character {
         this.currentSprite = 0;
         this.#currentAnimation = this.startingAnimation ?? 'walk';
         this.frameAccumulator = 0;
+        this.#sustainCounter = 0;
+        this.#sustainLimit = 0;
+        this.#isActing = false;
         this.isIdle = false;
         this.idleCounter = 0;
         this.frameCounter = 1;
@@ -127,7 +133,6 @@ export class Character {
         this.#advanceAnimationSprite();
         this.#pickRandomDirection();
 
-
         const speed = this.behavior.speeds[this.#currentAnimation] ?? this.#DEFAULT_SPEED;
 
         let collisionCorrectedDirectionX = bounceMovement(
@@ -146,6 +151,21 @@ export class Character {
         updateMovement(this, speed);
     }
 
+    #handleAction() {
+        if (this.currentSprite === this.animations[this.#currentAnimation].spritesPerRow - 1) {
+            ++this.#sustainCounter;
+
+            if (this.#sustainCounter >= this.#sustainLimit) {
+                this.#sustainCounter = 0;
+                this.#isActing = false;
+                this.currentAnimation = 'walk';
+            }
+            
+        } else {
+            this.#advanceAnimationSprite();
+        }
+    }
+
     get #animationRow() {
         const startRow = this.animations[this.#currentAnimation]?.startRow ?? 0;
         const directionMode = this.animations[this.#currentAnimation]?.directionMode ?? 'fixed';
@@ -157,12 +177,27 @@ export class Character {
 
         return this.animations[this.#currentAnimation].startRow;
     }
+
+    #currentAnimData() {
+        return this.animations[this.#currentAnimation];
+    }
+
+    playAction(name) {
+        const anim = this.animations[name];
+
+        if (anim && anim.type === 'action') {
+            this.#isActing = true;
+            this.currentAnimation = name;
+        }
+    }
+
     get currentAnimation() {
         return this.#currentAnimation;
     }
 
     set currentAnimation(name) {
         if (this.animations[name]) {
+            this.#sustainLimit = (this.animations[name].sustainSeconds ?? 0) * 60;
             this.frameAccumulator = 0;
             this.currentSprite = 0;
             this.#currentAnimation = name;
@@ -170,6 +205,11 @@ export class Character {
     }
 
     update(canvas) {
+        if (this.#isActing) {
+            this.#handleAction();
+            return;
+        }
+
         if (this.isIdle) {
             this.#handleIdle();
             return;
