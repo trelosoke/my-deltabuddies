@@ -33,7 +33,9 @@ export const charactersConfig = {
                 rowCount: 1,
                 spritesPerRow: 6,
                 directionMode: 'fixed',
-                sustainSeconds: 6
+                sustainSeconds: 6,
+                chance: 5,
+                allowedDirections: ['down']
             }
         },
         
