@@ -13,6 +13,15 @@ export class Character {
         this.spriteSheet = spriteSheet;
         this.layout = config.layout;
         this.animations = config.animations;
+        this.allAnimations = Object.keys(this.animations);
+
+        this.actions = this.allAnimations.filter(name =>
+            this.animations[name].type === 'action'
+        );
+        this.movements = this.allAnimations.filter(name =>
+            this.animations[name].type === 'movement'
+        );
+        
         this.startingAnimation = config.startingAnimation;
         this.behavior = config.behavior; 
 
