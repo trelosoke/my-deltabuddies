@@ -193,12 +193,10 @@ export class Character {
         if (this.currentSprite === this.animations[this.#currentAnimation].spritesPerRow - 1) {
             ++this.#sustainCounter;
 
-            this.#restoreStateBeforeAction();
-
             if (this.#sustainCounter >= this.#sustainLimit) {
                 this.#sustainCounter = 0;
                 this.#isActing = false;
-                this.currentAnimation = 'walk';
+                this.#restoreStateBeforeAction();
             }
             
         } else {
@@ -223,7 +221,7 @@ export class Character {
         this.idleCounter = this.#savedState.idle.counter;
         this.idleDuration = this.#savedState.idle.duration;
         this.isIdle = this.#savedState.wasIdle;
-        this.#currentAnimation = this.#savedState.animation;
+        this.currentAnimation = this.#savedState.animation;
 
         this.#savedState = null;
 
