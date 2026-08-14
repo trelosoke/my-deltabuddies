@@ -5,6 +5,7 @@ export class Character {
     #DEFAULT_FRAME_DELAY = 1;
 
     #currentAnimation;
+    #savedState;
     #isActing;
     #sustainCounter;
     #sustainLimit;
@@ -13,6 +14,9 @@ export class Character {
         this.spriteSheet = spriteSheet;
         this.layout = config.layout;
         this.animations = config.animations;
+        this.behavior = config.behavior; 
+
+        this.startingAnimation = config.startingAnimation;
         this.allAnimations = Object.keys(this.animations);
 
         this.actions = this.allAnimations.filter(name =>
@@ -21,9 +25,8 @@ export class Character {
         this.movements = this.allAnimations.filter(name =>
             this.animations[name].type === 'movement'
         );
-        
-        this.startingAnimation = config.startingAnimation;
-        this.behavior = config.behavior; 
+
+        this.#savedState = null;
 
         this.posX = 0;
         this.posY = 0;
@@ -164,6 +167,8 @@ export class Character {
         if (this.currentSprite === this.animations[this.#currentAnimation].spritesPerRow - 1) {
             ++this.#sustainCounter;
 
+            this.#restoreStateBeforeAction();
+
             if (this.#sustainCounter >= this.#sustainLimit) {
                 this.#sustainCounter = 0;
                 this.#isActing = false;
@@ -173,6 +178,29 @@ export class Character {
         } else {
             this.#advanceAnimationSprite();
         }
+    }
+
+    #stateBeforeAction() {
+        if (this.#savedState === null) {
+            this.#savedState = {
+                idle: {
+                    counter: this.idleCounter,
+                    duration: this.idleDuration
+                },
+                wasIdle: this.isIdle,
+                animation: this.#currentAnimation
+            };
+        }
+    }
+
+    #restoreStateBeforeAction() {
+        this.idleCounter = this.#savedState.idle.counter;
+        this.idleDuration = this.#savedState.idle.duration;
+        this.isIdle = this.#savedState.wasIdle;
+        this.#currentAnimation = this.#savedState.animation;
+
+        this.#savedState = null;
+
     }
 
     #pickRandomAction() {
@@ -208,6 +236,8 @@ export class Character {
             actionName = this.#pickRandomAction();
             if (!actionName) { return; }
         }
+
+        this.#stateBeforeAction();
 
         const anim = this.animations[actionName];
 
