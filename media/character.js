@@ -1,4 +1,4 @@
-import { updateMovement, bounceMovement } from './movement.js';
+﻿import { updateMovement, bounceMovement } from './movement.js';
 
 export class Character {
     #DEFAULT_SPEED = 0;
@@ -85,11 +85,11 @@ export class Character {
     }
 
     #canPickNewDirection() {
-        return this.#shoudTrigger(this.directionChange);
+        return this.#shouldTrigger(this.frameCounter, this.directionChange);
     }
 
-    #shoudTrigger(interval) {
-        return this.frameCounter % interval === 0;
+    #shouldTrigger(counter, interval) {
+        return counter % interval === 0;
     }
 
     #pickRandomDirection() {
@@ -131,7 +131,7 @@ export class Character {
     }
 
     #handleMovement(canvas) {
-        if (this.#shoudTrigger(this.idleTrigger)) {
+        if (this.#shouldTrigger(this.frameCounter, this.idleTrigger)) {
             this.idleTrigger = this.#randomBetween(
                 this.behavior.idleTriggerRange.min, 
                 this.behavior.idleTriggerRange.max
