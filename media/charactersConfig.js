@@ -34,7 +34,7 @@ export const charactersConfig = {
                 spritesPerRow: 6,
                 directionMode: 'fixed',
                 sustainSeconds: 6,
-                chance: 5,
+                chance: 90,
                 allowedDirections: ['down']
             }
         },
@@ -50,7 +50,8 @@ export const charactersConfig = {
             startY: (canvasHeight) => canvasHeight / 2,
             idleDurationRange: { min: 90, max: 260 },
             idleTriggerRange: { min: 300, max: 720 },
-            directionChangeRange: { min: 80, max: 260 }
+            directionChangeRange: { min: 80, max: 260 },
+            actionDelayRange: { min: 100, max: 105 }
         },
     },
     susie: {
@@ -92,7 +93,8 @@ export const charactersConfig = {
             startY: (canvasHeight) => canvasHeight / 2,
             idleDurationRange: { min: 90, max: 260 },
             idleTriggerRange: { min: 300, max: 720 },
-            directionChangeRange: { min: 80, max: 260 }
+            directionChangeRange: { min: 80, max: 260 },
+            actionDelayRange: { min: 100, max: 180 }
         }
     },
     ralsei: {
@@ -134,7 +136,8 @@ export const charactersConfig = {
             startY: (canvasHeight) => canvasHeight / 2,
             idleDurationRange: { min: 90, max: 260 },
             idleTriggerRange: { min: 300, max: 720 },
-            directionChangeRange: { min: 80, max: 260 }
+            directionChangeRange: { min: 80, max: 260 },
+            actionDelayRange: { min: 100, max: 180 }
         }
     },
 };
