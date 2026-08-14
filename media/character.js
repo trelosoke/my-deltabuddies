@@ -257,7 +257,7 @@ export class Character {
         return this.animations[this.#currentAnimation].startRow;
     }
 
-    #currentAnimData() {
+    get #currentAnimData() {
         return this.animations[this.#currentAnimation];
     }
 
