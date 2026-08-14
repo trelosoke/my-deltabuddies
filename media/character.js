@@ -232,19 +232,23 @@ export class Character {
     }
 
     playAction(actionName) {
+        if (this.#isActing) { return false; }
+
         if (!actionName) {
             actionName = this.#pickRandomAction();
-            if (!actionName) { return; }
+            if (!actionName) { return false; }
         }
-
-        this.#stateBeforeAction();
 
         const anim = this.animations[actionName];
+        if (!anim) { return false; }
 
-        if (anim && anim.type === 'action') {
-            this.#isActing = true;
-            this.currentAnimation = actionName;
-        }
+        if (anim.type !== 'action') { return false; }
+
+        this.#stateBeforeAction();
+        this.#isActing = true;
+        this.currentAnimation = actionName;
+
+        return true;
     }
 
     get currentAnimation() {
