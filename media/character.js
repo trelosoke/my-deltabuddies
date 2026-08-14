@@ -7,6 +7,7 @@ export class Character {
     #currentAnimation;
     #savedState;
     #isActing;
+    #pendingAction;
     #sustainCounter;
     #sustainLimit;
 
@@ -27,6 +28,7 @@ export class Character {
         );
 
         this.#savedState = null;
+        this.#pendingAction = null;
 
         this.posX = 0;
         this.posY = 0;
@@ -58,6 +60,7 @@ export class Character {
             this.behavior.directionChangeRange.min,
             this.behavior.directionChangeRange.max
         );
+        this.actionDelay = 0;
     }
 
     init(canvas) {
@@ -121,8 +124,19 @@ export class Character {
                 this.behavior.idleDurationRange.max
             );
 
+            this.#pendingAction = null;
             this.isIdle = false;
             this.idleCounter = 0;
+            return;
+        }
+
+        if (this.#pendingAction && this.idleCounter >= this.actionDelay) {
+            const actionName = this.#pendingAction;
+            const success = this.playAction(actionName);
+            this.#pendingAction = null;
+            if (!success) {
+                console.warn(`Action ${actionName} could not be executed`);
+            }
             return;
         }
 
@@ -137,6 +151,18 @@ export class Character {
                 this.behavior.idleTriggerRange.max
             );
             
+            const actionName = this.#pickRandomAction();
+
+            if (actionName && this.#shouldTryAction(actionName)) {
+                this.#pendingAction = actionName;
+                this.actionDelay = this.#randomBetween(
+                    this.behavior.actionDelayRange.min,
+                    this.behavior.actionDelayRange.max
+                );
+            } else {
+                this.#pendingAction = null;
+            }
+
             this.isIdle = true;
             this.idleCounter = 0;
             return;
@@ -201,6 +227,12 @@ export class Character {
 
         this.#savedState = null;
 
+    }
+
+    #shouldTryAction(actionName) {
+        const anim = this.animations[actionName];
+        const chance = anim.chance ?? 0;
+        return Math.random() < chance / 100;
     }
 
     #pickRandomAction() {
