@@ -175,6 +175,18 @@ export class Character {
         }
     }
 
+    #pickRandomAction() {
+        const availableActions = this.actions.filter(name => {
+            const anim = this.animations[name];
+            const allowed = anim.allowedDirections || [];
+            return allowed.includes(this.currentDirection);
+        });
+
+        if (availableActions.length === 0) { return null; }
+
+        return availableActions[Math.floor(Math.random() * availableActions.length)];
+    }
+
     get #animationRow() {
         const startRow = this.animations[this.#currentAnimation]?.startRow ?? 0;
         const directionMode = this.animations[this.#currentAnimation]?.directionMode ?? 'fixed';
@@ -191,12 +203,17 @@ export class Character {
         return this.animations[this.#currentAnimation];
     }
 
-    playAction(name) {
-        const anim = this.animations[name];
+    playAction(actionName) {
+        if (!actionName) {
+            actionName = this.#pickRandomAction();
+            if (!actionName) { return; }
+        }
+
+        const anim = this.animations[actionName];
 
         if (anim && anim.type === 'action') {
             this.#isActing = true;
-            this.currentAnimation = name;
+            this.currentAnimation = actionName;
         }
     }
 
