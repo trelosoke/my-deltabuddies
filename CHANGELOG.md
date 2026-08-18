@@ -4,6 +4,15 @@ All notable changes to the "mydeltabuddies" extension will be documented in this
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.4.0] - 2026-08-18
+
+- Implement action system with chance-based selection and direction constraints
+- Add state save/restore so characters return exactly to pre-action state
+- Schedule actions during idle with configurable delay for more natural behavior
+- Add unique idle actions for all characters: Kris (v_sign, hold_flower), Susie (eat_chalk, laugh, yawning, stretching), Ralsei (sit)
+- Update sprite sheets with frames for the new idle actions
+- Tune action chances and timing ranges for balanced, varied behavior
+
 ## [0.3.0] - 2026-08-10
 
 - Add multi-animation support with data-driven config
