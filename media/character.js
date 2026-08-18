@@ -1,22 +1,44 @@
-import { updateMovement, bounceMovement } from './movement.js';
+﻿import { updateMovement, bounceMovement } from './movement.js';
 
 export class Character {
     #DEFAULT_SPEED = 0;
     #DEFAULT_FRAME_DELAY = 1;
 
+    #currentAnimation;
+    #savedState;
+    #isActing;
+    #pendingAction;
+    #sustainCounter;
+    #sustainLimit;
+
     constructor(spriteSheet, config) {
         this.spriteSheet = spriteSheet;
         this.layout = config.layout;
         this.animations = config.animations;
-        this.activeAnimation = config.activeAnimation;
         this.behavior = config.behavior; 
+
+        this.startingAnimation = config.startingAnimation;
+        this.allAnimations = Object.keys(this.animations);
+
+        this.actions = this.allAnimations.filter(name =>
+            this.animations[name].type === 'action'
+        );
+        this.movements = this.allAnimations.filter(name =>
+            this.animations[name].type === 'movement'
+        );
+
+        this.#savedState = null;
+        this.#pendingAction = null;
 
         this.posX = 0;
         this.posY = 0;
         this.currentDirection = 'down';
         this.currentSprite = 0;
-        this.currentAnimation = this.activeAnimation;
+        this.#currentAnimation = this.startingAnimation ?? 'walk';
         this.frameAccumulator = 0;
+        this.#sustainCounter = 0;
+        this.#sustainLimit = 0;
+        this.#isActing = false;
         this.isIdle = false;
         this.idleCounter = 0;
         this.frameCounter = 1;
@@ -38,6 +60,7 @@ export class Character {
             this.behavior.directionChangeRange.min,
             this.behavior.directionChangeRange.max
         );
+        this.actionDelay = 0;
     }
 
     init(canvas) {
@@ -65,15 +88,15 @@ export class Character {
     }
 
     #canPickNewDirection() {
-        return this.#shoudTrigger(this.directionChange);
+        return this.#shouldTrigger(this.frameCounter, this.directionChange);
     }
 
-    #shoudTrigger(interval) {
-        return this.frameCounter % interval === 0;
+    #shouldTrigger(counter, interval) {
+        return counter % interval === 0;
     }
 
     #pickRandomDirection() {
-        const directionOrder = this.animations[this.currentAnimation].directionOrder;
+        const directionOrder = this.animations[this.#currentAnimation].directionOrder;
         if (directionOrder && this.#canPickNewDirection()) {
             this.directionChange = this.#randomBetween(
                 this.behavior.directionChangeRange.min, 
@@ -84,6 +107,16 @@ export class Character {
         }
     }
 
+    #advanceAnimationSprite() {
+        const frameDelay = this.animations[this.#currentAnimation]?.frameDelay ?? this.#DEFAULT_FRAME_DELAY;
+        this.frameAccumulator += 1 / frameDelay;
+
+        if (this.frameAccumulator >= 1.0) {
+            this.currentSprite = (this.currentSprite + 1) % this.animations[this.#currentAnimation].spritesPerRow;
+            this.frameAccumulator -= 1.0;
+        }
+    }
+
     #handleIdle() {
         if (this.idleCounter >= this.idleDuration) {
             this.idleDuration = this.#randomBetween(
@@ -91,8 +124,20 @@ export class Character {
                 this.behavior.idleDurationRange.max
             );
 
+            this.#pendingAction = null;
             this.isIdle = false;
             this.idleCounter = 0;
+            return;
+        }
+
+        if (this.#pendingAction && this.idleCounter >= this.actionDelay) {
+            const actionName = this.#pendingAction;
+            const success = this.playAction(actionName);
+            this.#pendingAction = null;
+            if (!success) {
+                //TODO: remove before release
+                console.warn(`Action ${actionName} could not be executed`);
+            }
             return;
         }
 
@@ -101,29 +146,33 @@ export class Character {
     }
 
     #handleMovement(canvas) {
-        if (this.#shoudTrigger(this.idleTrigger)) {
+        if (this.#shouldTrigger(this.frameCounter, this.idleTrigger)) {
             this.idleTrigger = this.#randomBetween(
                 this.behavior.idleTriggerRange.min, 
                 this.behavior.idleTriggerRange.max
             );
             
+            const actionName = this.#pickRandomAction();
+
+            if (actionName && this.#shouldTryAction(actionName)) {
+                this.#pendingAction = actionName;
+                this.actionDelay = this.#randomBetween(
+                    this.behavior.actionDelayRange.min,
+                    this.behavior.actionDelayRange.max
+                );
+            } else {
+                this.#pendingAction = null;
+            }
+
             this.isIdle = true;
             this.idleCounter = 0;
             return;
         }
 
-        const frameDelay = this.animations[this.currentAnimation]?.frameDelay ?? this.#DEFAULT_FRAME_DELAY;
-        this.frameAccumulator += 1 / frameDelay;
-
-        if (this.frameAccumulator >= 1.0) {
-            this.currentSprite = (this.currentSprite + 1) % this.animations[this.currentAnimation].spritesPerRow;
-            this.frameAccumulator -= 1.0;
-        }
-
+        this.#advanceAnimationSprite();
         this.#pickRandomDirection();
 
-
-        const speed = this.behavior.speeds[this.currentAnimation] ?? this.#DEFAULT_SPEED;
+        const speed = this.behavior.speeds[this.#currentAnimation] ?? this.#DEFAULT_SPEED;
 
         let collisionCorrectedDirectionX = bounceMovement(
             this.posX, this.spriteCenterX, speed, this.spriteCenterX, canvas.width, ['left', 'right']
@@ -141,19 +190,117 @@ export class Character {
         updateMovement(this, speed);
     }
 
+    #handleAction() {
+        if (this.currentSprite === this.animations[this.#currentAnimation].spritesPerRow - 1) {
+            ++this.#sustainCounter;
+
+            if (this.#sustainCounter >= this.#sustainLimit) {
+                this.#sustainCounter = 0;
+                this.#isActing = false;
+                this.#restoreStateBeforeAction();
+            }
+            
+        } else {
+            this.#advanceAnimationSprite();
+        }
+    }
+
+    #stateBeforeAction() {
+        if (this.#savedState === null) {
+            this.#savedState = {
+                idle: {
+                    counter: this.idleCounter,
+                    duration: this.idleDuration
+                },
+                wasIdle: this.isIdle,
+                animation: this.#currentAnimation
+            };
+        }
+    }
+
+    #restoreStateBeforeAction() {
+        this.idleCounter = this.#savedState.idle.counter;
+        this.idleDuration = this.#savedState.idle.duration;
+        this.isIdle = this.#savedState.wasIdle;
+        this.currentAnimation = this.#savedState.animation;
+
+        this.#savedState = null;
+
+    }
+
+    #shouldTryAction(actionName) {
+        const anim = this.animations[actionName];
+        const chance = anim.chance ?? 0;
+        return Math.random() < chance / 100;
+    }
+
+    #pickRandomAction() {
+        const availableActions = this.actions.filter(name => {
+            const anim = this.animations[name];
+            const allowed = anim.allowedDirections || [];
+            return allowed.includes(this.currentDirection);
+        });
+
+        if (availableActions.length === 0) { return null; }
+
+        return availableActions[Math.floor(Math.random() * availableActions.length)];
+    }
+
     get #animationRow() {
-        const startRow = this.animations[this.currentAnimation]?.startRow ?? 0;
-        const directionMode = this.animations[this.currentAnimation]?.directionMode ?? 'fixed';
-        const directionOrder = this.animations[this.currentAnimation].directionOrder ?? [];
+        const startRow = this.animations[this.#currentAnimation]?.startRow ?? 0;
+        const directionMode = this.animations[this.#currentAnimation]?.directionMode ?? 'fixed';
+        const directionOrder = this.animations[this.#currentAnimation].directionOrder ?? [];
 
         if (directionMode === '4way') {
             return startRow + directionOrder.indexOf(this.currentDirection);
         }
 
-        return this.animations[this.currentAnimation].startRow;
+        return this.animations[this.#currentAnimation].startRow;
+    }
+
+    get #currentAnimData() {
+        return this.animations[this.#currentAnimation];
+    }
+
+    playAction(actionName) {
+        if (this.#isActing) { return false; }
+
+        if (!actionName) {
+            actionName = this.#pickRandomAction();
+            if (!actionName) { return false; }
+        }
+
+        const anim = this.animations[actionName];
+        if (!anim) { return false; }
+
+        if (anim.type !== 'action') { return false; }
+
+        this.#stateBeforeAction();
+        this.#isActing = true;
+        this.currentAnimation = actionName;
+
+        return true;
+    }
+
+    get currentAnimation() {
+        return this.#currentAnimation;
+    }
+
+    set currentAnimation(name) {
+        if (this.animations[name]) {
+            this.#sustainLimit = (this.animations[name].sustainSeconds ?? 0) * 60;
+            this.frameAccumulator = 0;
+            this.currentSprite = 0;
+            this.#currentAnimation = name;
+        }
     }
 
     update(canvas) {
+        if (this.#isActing) {
+            this.#handleAction();
+            return;
+        }
+
         if (this.isIdle) {
             this.#handleIdle();
             return;
