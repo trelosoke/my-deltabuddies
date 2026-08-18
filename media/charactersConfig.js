@@ -34,7 +34,7 @@ export const charactersConfig = {
                 spritesPerRow: 6,
                 directionMode: 'fixed',
                 sustainSeconds: 6,
-                chance: 90,
+                chance: 15,
                 allowedDirections: ['down']
             },
 
@@ -63,7 +63,7 @@ export const charactersConfig = {
             idleDurationRange: { min: 90, max: 260 },
             idleTriggerRange: { min: 300, max: 720 },
             directionChangeRange: { min: 80, max: 260 },
-            actionDelayRange: { min: 100, max: 105 }
+            actionDelayRange: { min: 100, max: 170 }
         },
     },
     susie: {
@@ -163,9 +163,9 @@ export const charactersConfig = {
             },
             startX: (canvasWidth) => canvasWidth / 2,
             startY: (canvasHeight) => canvasHeight / 2,
-            idleDurationRange: { min: 90, max: 260 },
-            idleTriggerRange: { min: 300, max: 720 },
-            directionChangeRange: { min: 80, max: 260 },
+            idleDurationRange: { min: 90, max: 300 },
+            idleTriggerRange: { min: 400, max: 920 },
+            directionChangeRange: { min: 100, max: 410 },
             actionDelayRange: { min: 100, max: 180 }
         }
     },
@@ -218,10 +218,10 @@ export const charactersConfig = {
             },
             startX: (canvasWidth) => canvasWidth / 2,
             startY: (canvasHeight) => canvasHeight / 2,
-            idleDurationRange: { min: 90, max: 260 },
-            idleTriggerRange: { min: 300, max: 720 },
-            directionChangeRange: { min: 80, max: 260 },
-            actionDelayRange: { min: 100, max: 180 }
+            idleDurationRange: { min: 90, max: 300 },
+            idleTriggerRange: { min: 440, max: 814 },
+            directionChangeRange: { min: 126, max: 322 },
+            actionDelayRange: { min: 100, max: 160 }
         }
     },
 };
