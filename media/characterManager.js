@@ -19,7 +19,8 @@ export class CharacterManager {
     }
 
     drawAll(ctx) {
-        this.#characters.forEach(character => {
+        const sorted = [...this.#characters].sort((a, b) => a.posY - b.posY);
+        sorted.forEach(character => {
             character.draw(ctx);
         });
     }
