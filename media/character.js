@@ -6,7 +6,6 @@ export class Character {
 
     #currentAnimation;
     #savedState;
-    #isActing;
     #pendingAction;
     #sustainCounter;
     #sustainLimit;
@@ -27,6 +26,7 @@ export class Character {
             this.animations[name].type === 'movement'
         );
 
+        this.state = 'moving';
         this.#savedState = null;
         this.#pendingAction = null;
 
@@ -38,8 +38,6 @@ export class Character {
         this.frameAccumulator = 0;
         this.#sustainCounter = 0;
         this.#sustainLimit = 0;
-        this.#isActing = false;
-        this.isIdle = false;
         this.idleCounter = 0;
         this.frameCounter = 1;
 
@@ -125,7 +123,7 @@ export class Character {
             );
 
             this.#pendingAction = null;
-            this.isIdle = false;
+            this.state = 'moving';
             this.idleCounter = 0;
             return;
         }
@@ -164,7 +162,7 @@ export class Character {
                 this.#pendingAction = null;
             }
 
-            this.isIdle = true;
+            this.state = 'idle';
             this.idleCounter = 0;
             return;
         }
@@ -196,7 +194,6 @@ export class Character {
 
             if (this.#sustainCounter >= this.#sustainLimit) {
                 this.#sustainCounter = 0;
-                this.#isActing = false;
                 this.#restoreStateBeforeAction();
             }
             
@@ -212,7 +209,7 @@ export class Character {
                     counter: this.idleCounter,
                     duration: this.idleDuration
                 },
-                wasIdle: this.isIdle,
+                state: this.state,
                 animation: this.#currentAnimation
             };
         }
@@ -221,11 +218,10 @@ export class Character {
     #restoreStateBeforeAction() {
         this.idleCounter = this.#savedState.idle.counter;
         this.idleDuration = this.#savedState.idle.duration;
-        this.isIdle = this.#savedState.wasIdle;
+        this.state = this.#savedState.state;
         this.currentAnimation = this.#savedState.animation;
 
         this.#savedState = null;
-
     }
 
     #shouldTryAction(actionName) {
@@ -263,7 +259,7 @@ export class Character {
     }
 
     playAction(actionName) {
-        if (this.#isActing) { return false; }
+        if (this.state === 'acting') { return false; }
 
         if (!actionName) {
             actionName = this.#pickRandomAction();
@@ -276,7 +272,7 @@ export class Character {
         if (anim.type !== 'action') { return false; }
 
         this.#stateBeforeAction();
-        this.#isActing = true;
+        this.state = 'acting';
         this.currentAnimation = actionName;
 
         return true;
@@ -296,16 +292,9 @@ export class Character {
     }
 
     update(canvas) {
-        if (this.#isActing) {
-            this.#handleAction();
-            return;
-        }
-
-        if (this.isIdle) {
-            this.#handleIdle();
-            return;
-        }
-
+        if (this.state === 'acting') { this.#handleAction(); return; }
+        if (this.state === 'idle') { this.#handleIdle(); return; }
+        
         this.#handleMovement(canvas);
         ++this.frameCounter;
     }
