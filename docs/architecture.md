@@ -147,14 +147,15 @@ srcH = layout.spriteHeight
 
 ## 5. Máquina de estados
 
-Não existe um `enum`. O estado é representado por flags e a **precedência está
-implícita** em `Character.update`:
+O estado é representado por um único `this.state` que contém um estado por vez. A **precedência está
+explícita** em `Character.update`:
 
 ```js
 update(canvas) {
-    if (#isActing) { #handleAction(); return; }   // prioridade máxima
-    if (isIdle)    { #handleIdle();   return; }
+    if (this.state === 'acting') { #handleAction(); return; }   // prioridade máxima
+    if (this.state === 'idle')   { #handleIdle();   return; }
     #handleMovement(canvas);                       // caso base: andando
+    ++this.frameCounter
 }
 ```
 
@@ -162,8 +163,7 @@ update(canvas) {
 
 | Campo | Papel |
 | --- | --- |
-| `#isActing` | Está tocando uma ação. |
-| `isIdle` | Está parado (idle). |
+| `state` | Determina qual o estado — `acting`, `idle` ou `moving` |
 | `#pendingAction` | Nome da ação sorteada, aguardando `actionDelay`. |
 | `#savedState` | Snapshot do estado antes da ação (pra restaurar depois). |
 | `#sustainCounter` / `#sustainLimit` | Controle do "segurar último frame" da ação. |
@@ -191,14 +191,14 @@ IDLE (parado no frame 0)
 AÇÃO ◄────────────────────────────────────────────┘
   │  toca frames até o último, segura `sustainLimit` frames
   ▼
-RESTAURA #savedState (animação, idleCounter, idleDuration, isIdle)
-  → volta pro estado anterior (IDLE ou MOVENDO)
+RESTAURA #savedState (animação, idleCounter, idleDuration, state)
+  → volta pro estado anterior (por enquanto, sempre IDLE)
 ```
 
 ### Save / restore
 
 `playAction` chama `#stateBeforeAction`, que salva (só uma vez):
-`{ idle: { counter, duration }, wasIdle, animation }`.
+`{ idle: { counter, duration }, state, animation }`.
 Ao terminar a ação, `#restoreStateBeforeAction` devolve tudo e limpa `#savedState`.
 
 > ⚠️ **Gotchas conhecidos desta máquina** (ver seção 8):
