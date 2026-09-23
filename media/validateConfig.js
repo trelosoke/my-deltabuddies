@@ -138,6 +138,247 @@ function checkBehavior(charName, char, report) {
     checkRange(charName, 'behavior.actionDelayRange', behavior.actionDelayRange, report);
 }
 
+function checkType(charName, path, anim, report) {
+    const value = anim.type;
+    if (value === undefined || value === null) {
+        report.error(`${charName}.${path} is missing.`);
+        return;
+    }
+
+    const types = ['movement', 'action'];
+
+    if (!types.includes(value)) {
+        report.error(`${charName}.${path}: invalid value: ${value} (type: ${typeof value}). Expected one of these strings: ${types.join(', ')}.`);
+    }
+}
+
+function checkFrameDelay(charName, path, anim, report) {
+    const value = anim.frameDelay;
+    if (value === undefined || value === null) {
+        report.error(`${charName}.${path} is missing.`);
+        return;
+    }
+
+    if (!Number.isFinite(value) || value <= 0) {
+        report.error(`${charName}.${path}: invalid value: ${value} (type: ${typeof value}). Expected a finite number > 0.`);
+    }
+}
+
+function checkSpritesPerRow(charName, path, anim, report) {
+    const value = anim.spritesPerRow;
+    if (value === undefined || value === null) {
+        report.error(`${charName}.${path} is missing.`);
+        return;
+    }
+
+    if (!Number.isFinite(value) || value < 1) {
+        report.error(`${charName}.${path}: invalid value: ${value} (type: ${typeof value}). Expected a finite number >= 1.`);
+        return;
+    }
+
+    if (!Number.isInteger(value)) {
+        report.error(`${charName}.${path}: invalid value: ${value} (type: ${typeof value}). Expected an integer.`);
+    }
+}
+
+function checkStartRow(charName, path, anim, report) {
+    const value = anim.startRow;
+    if (value === undefined || value === null) {
+        report.error(`${charName}.${path} is missing.`);
+        return;
+    }
+
+    if (!Number.isFinite(value) || value < 0) {
+        report.error(`${charName}.${path}: invalid value: ${value} (type: ${typeof value}). Expected a finite number >= 0.`);
+        return;
+    }
+
+    if (!Number.isInteger(value)) {
+        report.error(`${charName}.${path}: invalid value: ${value} (type: ${typeof value}). Expected an integer.`);
+    }
+}
+
+function checkRowCount(charName, path, anim, report) {
+    const value = anim.rowCount;
+    if (value === undefined || value === null) {
+        report.error(`${charName}.${path} is missing.`);
+        return;
+    }
+
+    if (!Number.isFinite(value) || value < 1) {
+        report.error(`${charName}.${path}: invalid value: ${value} (type: ${typeof value}). Expected a finite number > 1.`);
+        return;
+    }
+
+    if (!Number.isInteger(value)) {
+        report.error(`${charName}.${path}: invalid value: ${value} (type: ${typeof value}). Expected an integer.`);
+    }
+}
+
+function checkDirectionMode(charName, path, anim, report) {
+    const value = anim.directionMode;
+    if (value === undefined || value === null) {
+        report.error(`${charName}.${path} is missing.`);
+        return;
+    }
+
+    const directionModes = ['4way', 'fixed'];
+
+    if (!directionModes.includes(value)) {
+        report.error(`${charName}.${path}: invalid value: ${value} (type: ${typeof value}). Expected one of these strings: ${directionModes.join(', ')}.`);
+    }
+}
+
+function checkSustainSeconds(charName, path, anim, report) {
+    const value = anim.sustainSeconds;
+    if (value === undefined || value === null) {
+        return;
+    }
+
+    if (!Number.isFinite(value) || value < 0) {
+        report.error(`${charName}.${path}: invalid value: ${value} (type: ${typeof value}). Expected a finite number >= 0.`);
+    }
+}
+
+function checkChance(charName, path, anim, report) {
+    const value = anim.chance;
+    if (value === undefined || value === null) {
+        return;
+    }
+
+    if (!Number.isFinite(value) || value < 0 || value > 100) {
+        report.error(`${charName}.${path}: invalid value: ${value} (type: ${typeof value}). Expected a finite number between 0 and 100.`);
+    }
+}
+
+function checkAllowedDirections(charName, path, anim, report) {
+    const value = anim.allowedDirections;
+    if (value === undefined || value === null) {
+        report.error(`${charName}.${path} is missing.`);
+        return;
+    }
+
+    if (!Array.isArray(value)) {
+        report.error(`${charName}.${path}: invalid value ${value} (type: ${typeof value}). Expected an array of directions.`);
+        return;
+    }
+
+    const valid = ['down', 'left', 'right', 'up'];
+
+    if (value.length === 0) {
+        report.error(`${charName}.${path}: empty array. Expected at least one of these strings: ${valid.join(', ')}.`);
+        return;
+    }
+
+    const nonString = value.filter(direc => typeof direc !== 'string');
+
+    if (nonString.length > 0) {
+        report.error(`${charName}.${path}: items must be strings, got: ${nonString.map(direc => `${direc} (${typeof direc})`).join(', ')}.`);
+        return;
+    }
+
+    const invalid = value.filter(direc => !valid.includes(direc));
+
+    if (invalid.length > 0) {
+        report.error(`${charName}.${path}: invalid directions ${invalid.join(', ')}. Expected each to be one of these directions: ${valid.join(', ')}.`);
+        return;
+    }
+    
+    if (value.length > valid.length) {
+        report.error(`${charName}.${path}: expected a max of ${valid.length} directions (${valid.join(', ')}), got ${value.length}.`);
+    }
+
+    const duplicates = value.filter((d, i) => value.indexOf(d) !== i);
+    if (duplicates.length > 0) {
+        report.warn(`${charName}.${path}: duplicate directions: ${duplicates.join(', ')}.`);
+        return;
+    }
+}
+
+function checkDirectionOrder(charName, path, anim, report) {
+    const value = anim.directionOrder;
+    const mode = anim.directionMode;
+
+    if (mode !== '4way') {
+        if (value !== undefined && value !== null) {
+            report.warn(`${charName}.${path}.directionOrder: only applies to 4way animations. Ignored.`);
+        }
+        return;
+    }
+
+    if (value === undefined || value === null) {
+        report.error(`${charName}.${path} is missing.`);
+        return;
+    }
+
+    if (!Array.isArray(value)) {
+        report.error(`${charName}.${path}: invalid value ${value} (type: ${typeof value}). Expected an array of directions.`);
+        return;
+    }
+
+    const valid = ['down', 'left', 'right', 'up'];
+
+    if (value.length === 0) {
+        report.error(`${charName}.${path}: empty array. Expected at least one of these strings: ${valid.join(', ')}.`);
+        return;
+    }
+
+    const nonString = value.filter(direc => typeof direc !== 'string');
+
+    if (nonString.length > 0) {
+        report.error(`${charName}.${path}: items must be strings, got: ${nonString.map(direc => `${direc} (${typeof direc})`).join(', ')}.`);
+        return;
+    }
+
+    const invalid = value.filter(direc => !valid.includes(direc));
+
+    if (invalid.length > 0) {
+        report.error(`${charName}.${path}: invalid directions ${invalid.join(', ')}. Expected each to be one of these directions: ${valid.join(', ')}.`);
+        return;
+    }
+
+    const valueSet = new Set(value);
+    
+    const missing = valid.filter(direc => !valueSet.has(direc));
+    
+    if (missing.length > 0) {
+        report.error(`${charName}.${path}: missing directions: ${missing.join(', ')}. Expected all ${valid.length}: ${valid.join(', ')}`);
+        return;
+    }
+    
+    const duplicates = value.filter((d, i) => value.indexOf(d) !== i);
+    if (duplicates.length > 0) {
+        report.warn(`${charName}.${path}: duplicate directions: ${duplicates.join(', ')}.`);
+    }
+}
+
+function checkAnimation(charName, path, anim, report) {
+    if (anim === undefined || anim === null) {
+        report.error(`${charName}.${path} is missing.`);
+        return;
+    }
+
+    checkType(charName, path, anim, report);
+    
+    checkFrameDelay(charName, path, anim, report);
+    checkSpritesPerRow(charName, path, anim, report);
+    checkStartRow(charName, path, anim, report);
+    checkRowCount(charName, path, anim, report);
+    checkDirectionMode(charName, path, anim, report);
+    checkDirectionOrder(charName, path, anim, report);
+
+    if (anim.type === 'action') {
+        checkSustainSeconds(charName, path, anim, report);
+        checkChance(charName, path, anim, report);
+        checkAllowedDirections(charName, path, anim, report);
+    }
+}
+
+function checkAnimations(charName, char, report) {
+    for (const [animName, anim] of Object.entries(char.animations)) {
+        checkAnimation(charName, `${charName}.animations.${animName}`, anim, report);
+    }
+}
 
 
 /** @param {typeof import('./charactersConfig.js').charactersConfig} charactersConfig */
@@ -152,9 +393,8 @@ export function validateConfig(charactersConfig) {
     for (const [charName, char] of Object.entries(charactersConfig)) {
         checkLayout(charName, char, report);
         checkStartingAnimation(charName, char, report);
+        checkAnimations(charName, char, report);
         checkBehavior(charName, char, report);
-
-        
     }
 
     if(report.warnings.length > 0) {
