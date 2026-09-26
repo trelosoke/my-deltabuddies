@@ -1,7 +1,10 @@
 import { Character } from './character.js';
 import { CharacterManager } from './characterManager.js';
 import { charactersConfig } from './charactersConfig.js';
+import { validateConfig } from './validateConfig.js';
 import { startAnimation } from './animation.js';
+
+validateConfig(charactersConfig);
 
 function loadCharacter(data) {
     const img = new Image();
