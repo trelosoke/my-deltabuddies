@@ -51,6 +51,30 @@ describe('validateConfig', () => {
         });
     });
 
+    describe('Integer', () => {
+        test('startRow isn\'t integer → throws', () => {
+            const config = makeValidConfig({ kris: { animations: { walk: {startRow: 0.2 }}}});
+
+            assert.throws(() => validateConfig(config), /kris\.animations\.walk\.startRow/);
+        });
+    });
+
+    describe('Number between', () => {
+        describe('Between 0 and 100 (inclusive)', () => {
+            test('chance isn\'t >= 0 → throws', () => {
+                const config = makeValidConfig({ kris: { animations: { v_sign: { chance: -1 }}}});
+
+                assert.throws(() => validateConfig(config), /kris\.animations\.v_sign\.chance/);
+            });
+
+            test('chance isn\'t <= 100 → throws', () => {
+                const config = makeValidConfig({ kris: { animations: { v_sign: { chance: 100.1 } }}});
+
+                assert.throws(() => validateConfig(config), /kris\.animations\.v_sign\.chance/);
+            });
+        });
+    });
+
     describe('Types', () => {
         describe('Enum', () => {
             test('animations.type isn\'t one of the valid values → throws', () => {
@@ -153,5 +177,75 @@ describe('validateConfig', () => {
                 assert.throws(() => validateConfig(config), /missing directions/);
             });
         });  
+    });
+
+    describe('Conditional', () => {
+        describe('directionOrder', () => {
+            test('directionOrder doesn\'t exist when directionMode is fixed → passes', () => {
+                const config = makeValidConfig();
+
+                assert.doesNotThrow(() => validateConfig(config));
+            });
+
+            test('directionOrder exist when directionMode is fixed → warns', (t) => {
+                const warnSpy = t.mock.method(console, 'warn', () => {});
+                const config = makeValidConfig({ kris: { animations: { v_sign: { directionOrder: ['down', 'left', 'left', 'up'] }}}});
+
+                validateConfig(config);
+
+                assert.strictEqual(warnSpy.mock.calls.length, 1);
+                assert.match(warnSpy.mock.calls[0].arguments[0], /only applies to 4way animations/);
+            });
+
+            test('directionOrder out when directionMode is 4way → throws', () => {
+                const config = makeValidConfig({ kris: { animations: { walk: { directionOrder: undefined }}}});
+
+                assert.throws(() => validateConfig(config), /directionOrder is missing/);
+            });
+        });
+    });
+
+    describe('Action animation', () => {
+        test('animation.type is movement and chance is invalid → ignores', () => {
+            const config = makeValidConfig({ kris: { animations: { walk: { chance: 999 }}}});
+
+            assert.doesNotThrow(() => validateConfig(config));
+        });
+    });
+
+    describe('Crossed reference', () => {
+        test('startingAnimation doesn\'t match with any existing animation → throws', () => {
+            const config = makeValidConfig({ kris: { startingAnimation: 'invalid' }});
+
+            assert.throws(() => validateConfig(config), /kris\.startingAnimation/);
+        });
+
+        test('behavior.speeds have orphan key → warns', (t) => {
+            const warnSpy = t.mock.method(console, 'warn', () => {});
+            const config = makeValidConfig({ kris: { behavior: { speeds: { orphan: 1 } } }});
+
+            validateConfig(config);
+
+            assert.strictEqual(warnSpy.mock.calls.length, 1);
+            assert.match(warnSpy.mock.calls[0].arguments[0], /orphan key/);
+        });
+
+        test('movement animation without behavior.speeds entry → throws', () => {
+            const config = makeValidConfig({ kris: { behavior: { speeds: { walk: undefined, run: 1 }}}});
+
+            assert.throws(() => validateConfig(config), /missing entry for movement/);
+        });
+    });
+
+    describe('Duplicates', () => {
+        test('allowedDirections has duplicates → warns', (t) => {
+            const warnSpy = t.mock.method(console, 'warn', () => {});
+            const config = makeValidConfig({ kris: { animations: { v_sign: { allowedDirections: ['down', 'down'] }}}});
+
+            validateConfig(config);
+
+            assert.strictEqual(warnSpy.mock.calls.length, 1);
+            assert.match(warnSpy.mock.calls[0].arguments[0], /duplicate directions/);
+        });
     });
 });
