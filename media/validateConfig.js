@@ -25,43 +25,43 @@ function checkLayout(path, char, report) {
 }
 
 function checkStartingAnimation(path, char, report) {
-    const startingAnimation = char.startingAnimation;
+    const value = char.startingAnimation;
 
-    if (!startingAnimation) {
+    if (value === undefined || value === null) {
         report.error(`${path}.startingAnimation is missing.`);
         return;
     }
 
-    if (typeof startingAnimation !== 'string') {
-        report.error(`${path}.startingAnimation: invalid value: ${startingAnimation} (type: ${typeof startingAnimation}). Expected a string.`);
+    if (typeof value !== 'string') {
+        report.error(`${path}.startingAnimation: invalid value: ${value} (type: ${typeof value}). Expected a string.`);
         return;
     }
 
-    if (!Object.keys(char.animations).includes(startingAnimation)) {
-        report.error(`${path}.startingAnimation: invalid value: ${startingAnimation}. Expect one of: ${Object.keys(char.animations).join(', ')}.`);
+    if (!Object.keys(char.animations).includes(value)) {
+        report.error(`${path}.startingAnimation: invalid value: ${value}. Expect one of: ${Object.keys(char.animations).join(', ')}.`);
     }
 }
 
 function checkSpeeds(path, char, report) {
-    const speeds = char.behavior.speeds;
-    if (!speeds) {
+    const value = char.behavior.speeds;
+    if (value === undefined || value === null) {
         report.error(`${path}.speeds is missing.`);
         return;
     }
-
-    for(const animName of Object.keys(speeds)) {
+    
+    for(const animName of Object.keys(value)) {
         if(!(animName in char.animations)) {
             report.warn(`${path}.speeds: orphan key '${animName}'. No matching animation.`);
         }
     }
 
     for(const [animName, anim] of Object.entries(char.animations)) {
-        if (anim.type === 'movement' && !(animName in speeds)) {
+        if (anim.type === 'movement' && !(animName in value)) {
             report.error(`${path}.speeds: missing entry for movement '${animName}.'`);
         }
     }
 
-    for(const [animName, speed] of Object.entries(speeds)) {
+    for(const [animName, speed] of Object.entries(value)) {
         if (!Number.isFinite(speed) || speed <= 0) {
             report.error(`${path}.speeds: invalid value for '${animName}': ${speed}. Expected a number > 0.`);
         }
@@ -290,15 +290,17 @@ function checkAllowedDirections(path, anim, report) {
     
     if (value.length > valid.length) {
         report.error(`${path}: expected a max of ${valid.length} directions (${valid.join(', ')}), got ${value.length}.`);
+        return;
     }
 
     const duplicates = value.filter((d, i) => value.indexOf(d) !== i);
     if (duplicates.length > 0) {
         report.warn(`${path}: duplicate directions: ${duplicates.join(', ')}.`);
-        return;
     }
 }
 
+// directionOrder order is not validated: it mirrors the spritesheet layout,
+// which is a design decision, not a runtime contract.
 function checkDirectionOrder(path, anim, report) {
     const value = anim.directionOrder;
     const mode = anim.directionMode;
