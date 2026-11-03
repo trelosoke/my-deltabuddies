@@ -183,7 +183,7 @@ MOVENDO
   │    └─ não passou                → #pendingAction = null
   ▼
 IDLE (parado no frame 0)
-  │  quando idleCounter >= actionDelay e há #pendingAction:
+  │  quando idleCounter > actionDelay e há #pendingAction:
   │      playAction()  ───────────────────────────┐
   │  quando idleCounter >= idleDuration:          │
   │      volta a MOVENDO                          │
@@ -203,7 +203,7 @@ Ao terminar a ação, `#restoreStateBeforeAction` devolve tudo e limpa `#savedSt
 
 > ⚠️ **Gotchas conhecidos desta máquina** (ver seção 8):
 > - `frameCounter` **congela** durante idle/ação (só incrementa no fim de `#handleMovement`).
-> - Se `actionDelay >= idleDuration`, a ação é descartada (o idle termina antes).
+> - Se `actionDelay > idleDuration`, a ação é descartada (o idle termina antes).
 > - `currentAnimation = name` é um **setter** que reseta `frameAccumulator`,
 >   `currentSprite` e `sustainLimit`. Parece atribuição, mas tem efeito colateral.
 
@@ -259,8 +259,7 @@ dois sprites se sobrepõem.
 1. **Sem delta time** — dependência de 60 FPS (seção 4).
 2. **`frameCounter` congela no idle/ação** — `#handleMovement` retorna antes de
    incrementar; os gatilhos baseados nele ficam parados.
-3. **`actionDelay` vs `idleDuration`** — ranges se sobrepõem; ações podem ser
-   engolidas.
+3. **`actionDelay` vs `idleDuration`** — ranges se sobrepõem; ações são engolidas caso o `actionDelay` seja maior que o `idleDuration`, que é o comportamento esperado para essa situação.
 4. **Getter/setter `currentAnimation`** — efeito colateral escondido.
 5. **`#animationRow` sem validação** — `indexOf` pode retornar `-1`.
 6. **Bounce frágil** — parâmetros redundantes, só troca direção, `else if` por eixo.

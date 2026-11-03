@@ -128,7 +128,7 @@ export class Character {
             return;
         }
 
-        if (this.#pendingAction && this.idleCounter >= this.actionDelay) {
+        if (this.#pendingAction && this.idleCounter > this.actionDelay) {
             const actionName = this.#pendingAction;
             const success = this.playAction(actionName);
             this.#pendingAction = null;
