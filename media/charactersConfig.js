@@ -34,7 +34,7 @@ export const charactersConfig = {
                 spritesPerRow: 6,
                 directionMode: 'fixed',
                 sustainSeconds: 6,
-                chance: 15,
+                chance: 22,
                 allowedDirections: ['down']
             },
 
@@ -46,7 +46,7 @@ export const charactersConfig = {
                 spritesPerRow: 16,
                 directionMode: 'fixed',
                 sustainSeconds: 0,
-                chance: 99,
+                chance: 30,
                 allowedDirections: ['down']
             }
         },
@@ -113,7 +113,7 @@ export const charactersConfig = {
                 spritesPerRow: 22,
                 directionMode: 'fixed',
                 sustainSeconds: 0,
-                chance: 99,
+                chance: 20,
                 allowedDirections: ['left']
             },
 
@@ -137,7 +137,7 @@ export const charactersConfig = {
                 spritesPerRow: 10,
                 directionMode: 'fixed',
                 sustainSeconds: 0,
-                chance: 99,
+                chance: 12,
                 allowedDirections: ['down']
             },
 
@@ -149,7 +149,7 @@ export const charactersConfig = {
                 spritesPerRow: 9,
                 directionMode: 'fixed',
                 sustainSeconds: 2.5,
-                chance: 38,
+                chance: 24,
                 allowedDirections: ['down']
             }
         },
@@ -204,7 +204,7 @@ export const charactersConfig = {
                 spritesPerRow: 10,
                 directionMode: 'fixed',
                 sustainSeconds: 2.5,
-                chance: 99,
+                chance: 66,
                 allowedDirections: ['down', 'left']
             }
         },
