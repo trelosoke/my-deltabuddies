@@ -132,10 +132,6 @@ export class Character {
             const actionName = this.#pendingAction;
             const success = this.playAction(actionName);
             this.#pendingAction = null;
-            if (!success) {
-                //TODO: remove before release
-                console.warn(`Action ${actionName} could not be executed`);
-            }
             return;
         }
 
