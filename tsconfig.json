@@ -1,9 +1,9 @@
 {
     "compilerOptions": {
         "module": "Node16",
-        "target": "ES2022",
+        "target": "es2024",
         "lib": [
-            "ES2022",
+            "ES2024",
             "DOM"
         ],
         "types": [
