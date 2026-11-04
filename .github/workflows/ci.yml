@@ -25,3 +25,6 @@ jobs:
 
       - name: Compile
         run: npm run compile --silent
+
+      - name: Tests
+        run: npm run test
