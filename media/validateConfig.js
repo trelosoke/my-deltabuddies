@@ -210,7 +210,7 @@ function checkRowCount(path, anim, report) {
     }
 
     if (!Number.isFinite(value) || value < 1) {
-        report.error(`${path}: invalid value: ${value} (type: ${typeof value}). Expected a finite number > 1.`);
+        report.error(`${path}: invalid value: ${value} (type: ${typeof value}). Expected a finite number >= 1.`);
         return;
     }
 
