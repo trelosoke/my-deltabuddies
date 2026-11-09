@@ -4,6 +4,10 @@ All notable changes to the "mydeltabuddies" extension will be documented in this
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.5.0] - 2026-11-09
+
+- 
+
 ## [0.4.0] - 2026-08-18
 
 - Implement action system with chance-based selection and direction constraints
