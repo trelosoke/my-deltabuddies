@@ -3,7 +3,7 @@
   "displayName": "my-deltabuddies",
   "description": "MyDeltabuddies is desktop aquarium extension for Visual Studio Code.",
   "version": "0.4.0",
-    "repository": {
+  "repository": {
     "type": "git",
     "url": "https://github.com/trelosoke/my-deltabuddies"
   },
@@ -23,13 +23,13 @@
       }
     ],
     "views": {
-        "explorer": [
-            {
-                "id": "mydeltabuddies.aquarium",
-                "name": "MyDeltabuddies",
-                "type": "webview"
-            }
-        ]
+      "explorer": [
+        {
+          "id": "mydeltabuddies.aquarium",
+          "name": "MyDeltabuddies",
+          "type": "webview"
+        }
+      ]
     }
   },
   "scripts": {
@@ -48,19 +48,26 @@
     "test:unit": "node --test \"tests/**/*.test.js\""
   },
   "devDependencies": {
-    "@types/vscode": "^1.125.0",
     "@types/mocha": "^10.0.10",
     "@types/node": "24.x",
-    "typescript-eslint": "^8.61.1",
-    "eslint": "^10.5.0",
+    "@types/vscode": "^1.125.0",
+    "@vscode/test-cli": "^0.0.15",
+    "@vscode/test-electron": "^3.0.0",
+    "@vscode/vsce": "^4.1.0",
     "esbuild": "^0.28.1",
+    "eslint": "^10.5.0",
     "npm-run-all": "^4.1.5",
     "typescript": "^6.0.3",
-    "@vscode/test-cli": "^0.0.15",
-    "@vscode/test-electron": "^3.0.0"
+    "typescript-eslint": "^8.61.1"
   },
   "overrides": {
     "diff": "^8.0.4",
-    "serialize-javascript": "^7.0.6"
+    "serialize-javascript": "^7.1.4",
+    "brace-expansion@<1.1.21": "1.1.21",
+    "brace-expansion@>=2.0.0 <2.1.7": "2.1.7",
+    "glob@>=9.0.0 <=14.0.1": "14.0.4",
+    "js-yaml@>=4.0.0 <4.3.2": "4.3.2",
+    "minimatch@>=7.0.0 <11.0.1": "11.0.5",
+    "shell-quote@>=1.8.4 <1.11.0": "1.12.0"
   }
 }
