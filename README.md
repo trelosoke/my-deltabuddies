@@ -14,7 +14,7 @@
   <h1 id="english">MyDeltabuddies</h1>
 </div>
 
-MyDeltabuddies is a desktop aquarium extension for Visual Studio Code. Just open it, sit back (or code, as you mostly will), and watch your favorite characters roam around and interact with each other.
+MyDeltabuddies is a desktop pet extension for Visual Studio Code. Just open it, sit back (or code, as you mostly will), and watch your favorite characters roam around and interact with each other.
 
 ## Features
 
@@ -22,7 +22,7 @@ MyDeltabuddies is a desktop aquarium extension for Visual Studio Code. Just open
 
 <div align="center">
   
-  <img src="docs/demos/demo_walk.gif" width="150px">
+  <img src="docs/demos/demo_walk-vid.gif" width="140px">
 
 </div>
 
@@ -30,15 +30,15 @@ MyDeltabuddies is a desktop aquarium extension for Visual Studio Code. Just open
 
 <div align="center">
   
-  <img src="docs/demos/demo_bounce.gif" width="150px">
+  <img src="docs/demos/demo_bounce-vid.gif" width="150px">
 
 </div>
 
-- **Multicharacters**: Watch Kris, Susie and Ralsei roam arround!
+- **Multicharacters and Animations**: Watch Kris, Susie and Ralsei roam arround and do stuff!
 
 <div align="center">
   
-  <img src="docs/demos/demo_multicharacter.gif" width="150px">
+  <img src="docs/demos/demo_multi_anim-vid.gif" width="250px">
 
 </div>
 
@@ -109,7 +109,7 @@ please contact me and I will do so immediately.
   <h1 id="portugues">MyDeltabuddies</h1>
 </div>
 
-MyDeltabuddies é uma extensão aquário de desktop para Visual Studio Code. Apenas abra, sente-se (ou code, como você normalmente irá), e assista seus personagens favoritos andarem por aí e interagirem uns com os outros.
+MyDeltabuddies é uma extensão pet de desktop para Visual Studio Code. Apenas abra, sente-se (ou code, como você normalmente irá), e assista seus personagens favoritos andarem por aí e interagirem uns com os outros.
 
 ## Funcionalidades
 
@@ -117,7 +117,7 @@ MyDeltabuddies é uma extensão aquário de desktop para Visual Studio Code. Ape
 
 <div align="center">
   
-  <img src="docs/demos/demo_walk.gif" width="150px">
+  <img src="docs/demos/demo_walk-vid.gif" width="140px">
 
 </div>
 
@@ -125,16 +125,16 @@ MyDeltabuddies é uma extensão aquário de desktop para Visual Studio Code. Ape
 
 <div align="center">
   
-  <img src="docs/demos/demo_bounce.gif" width="150px">
+  <img src="docs/demos/demo_bounce-vid.gif" width="150px">
 
 </div>
 
 
-- **Múltiplos personagens**: Veja Kris, Susie e Ralsei andarem por aí!
+- **Múltiplos personagens e Animações**: Veja Kris, Susie e Ralsei andarem por aí e fazerem várias coisas!
 
 <div align="center">
   
-  <img src="docs/demos/demo_multicharacter.gif" width="150px">
+  <img src="docs/demos/demo_multi_anim-vid.gif" width="250px">
 
 </div>
 
