@@ -1,7 +1,7 @@
 {
   "name": "mydeltabuddies",
   "displayName": "my-deltabuddies",
-  "description": "MyDeltabuddies is desktop aquarium extension for Visual Studio Code.",
+  "description": "A desktop pet extension for Visual Studio Code.",
   "version": "0.4.0",
   "repository": {
     "type": "git",
